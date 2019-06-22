@@ -1,28 +1,30 @@
 <?php
+  require_once('./includes/dbconnect_pdo.php');
 
-  
+  // Connection to DB
+  try {
+    $pdo = db_connect();
+  catch (PDOException $e) {
+    echo 'Connection failed: ' . $e->getMessage();
+  }
 
-  
-    if(!mysql_connect("localhost","root","")){
-      exit(mysql_error());
-      }
+  // Get URL string embedded param
+  $codven = $_REQUEST['codven'];
 
-    if (!mysql_select_db("base_dados")){
-       exit(mysql_erro());
-      }
+  try {
+    $stm = $pdo->prepare("SELECT prd.id, prd.data, prd.codcli, prd.codven, prd.cdpro, p.nomepro,
+                          prd.qtd, prd.prunit, prd.desconto, prd.total FROM prdped AS prd, produto AS p
+                          WHERE p.id = prd.cdpro AND prd.codven = :codven");
+    $stm->bindParam(':codven', $codven);
+    $stm->execute();
+    $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
+  catch (PDOException $e) {
+    echo 'Prepared Statement Failed: ' . $e->getMessage();
+  }
 
-    $sql=("select * from prdped where codven = '".$_REQUEST['codven']."' ");
+  print(json_encode($rows));
+  //echo json_last_error_msg();
 
-    $resultado=mysql_query($sql);
-    if (mysql_num_rows($resultado) > 0) {
-       $sql= mysql_query("select prdped.id,prdped.data,prdped.codcli,prdped.codven,prdped.cdpro,produto.nomepro,prdped.qtd,prdped.prunit,prdped.desconto,prdped.total from prdped,produto where produto.id = prdped.cdpro and prdped.codven = '".$_REQUEST['codven']."' ");
-
-       while($linha=mysql_fetch_assoc($sql))  $result[]=$linha;
-       print(json_encode($result));
-       mysql_close();}
-     
-
-
+  // Close PDO
+  $pdo = null
 ?>
- 
-

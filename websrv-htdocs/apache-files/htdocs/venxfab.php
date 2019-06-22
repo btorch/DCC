@@ -1,31 +1,31 @@
 <?php
-   
+  require_once('./includes/dbconnect_pdo.php');
 
-    $codven = $_REQUEST['codven'];
-     
-   //abre conexao com o banco
-    if(!mysql_connect("localhost","root","")){
-      exit(mysql_error());
-   }
+  // Connection to DB
+  try {
+    $pdo = db_connect();
+    //$pdo->exec('SET NAMES utf8');
+  catch (PDOException $e) {
+    echo 'Connection failed: ' . $e->getMessage();
+  }
 
-   if (!mysql_select_db("base_dados")){
-      exit(mysql_erro());
-   }
+  // Get URL string embedded param
+  $codven = $_REQUEST['codven'];
 
-  // Sql de consulta
-    $sql=("select * from VENXFAB");
+  try {
+    $stm = $pdo->prepare("SELECT * p.id, p.nomepro, p.gramatura, p.und, p.grupo, p.codref, p.preco, p.qtdest
+                          FROM produto AS p, venxfab AS v WHERE p.grupo = v.codgru AND v.codven = :codven");
+    $stm->bindParam(':codven', $codven);
+    $stm->execute();
+    $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
+  catch (PDOException $e) {
+    echo 'Prepared Statememnt Failed: ' . $e->getMessage();
+  }
 
-    $resultado=mysql_query($sql);
-    if (mysql_num_rows($resultado) > 0) {
-       $sql= mysql_query("select produto.id,produto.nomepro,produto.gramatura,produto.und,produto.grupo,produto.codref,produto.preco,produto.qtdest
-                          from produto,venxfab where produto.grupo = venxfab.codgru and venxfab.codven = '".$_REQUEST['codven']."'");
+  // Return JSON Object
+  print(json_encode($rows));
+  //echo json_last_error_msg();
 
-       while($linha=mysql_fetch_assoc($sql))  $result[]=$linha;
-       print(json_encode($result));
-       mysql_close();}
-   
-
-                
+  // Close PDO
+  $pdo = null
 ?>
- 
- 

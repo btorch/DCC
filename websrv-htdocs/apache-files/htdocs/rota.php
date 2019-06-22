@@ -1,31 +1,32 @@
 <?php
+  require_once('./includes/dbconnect_pdo.php');
 
-if (@mysql_connect("localhost", "root", "")) {
-	
-	} else {
-		echo "N";
-                exit;
-	} 
+  // Connection to DB
+  try {
+    $pdo = db_connect();
+    $pdo->exec('SET NAMES utf8');
+  catch (PDOException $e) {
+    echo 'Connection Failed: ' . $e->getMessage();
+  }
 
-   $codven = $_REQUEST['codven'];
+  // Get URL string embedded param
+  $codven = $_REQUEST['codven'];
 
-   //abre conexao com o banco
-    if(!mysql_connect("localhost","root","")){
-      exit(mysql_error());
-   }
+  try {
+    $stm = $pdo->prepare("SELECT * FROM rota WHERE codven = :codven");
+    $stm->bindParam(':codven', $codven);
+    $stm->execute();
+    $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
+  catch (PDOException $e) {
+    echo 'Prepared Statememnt Failed: ' . $e->getMessage();
+  }
 
-   if (!mysql_select_db("base_dados")){
-      exit(mysql_erro());
-   }
+  // Return JSON Object
+  print(json_encode($rows));
+  //echo json_last_error_msg();
 
-  // Sql de consulta
-
-    $sql=mysql_query("select * from rota where codven = '".$_REQUEST['codven']."' ");
-    while($linha=mysql_fetch_assoc($sql))  $result[]=$linha;
-    print(json_encode($result));
-    mysql_close();
-    
-
+  // Close PDO
+  $pdo = null
 ?>
  
  

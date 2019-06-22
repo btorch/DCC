@@ -1,30 +1,32 @@
 <?php
+  require_once('./includes/dbconnect_pdo.php');
 
+  // Connection to DB
+  try {
+    $pdo = db_connect();
+    $pdo->exec('SET NAMES utf8');
+  catch (PDOException $e) {
+    echo 'Connection Failed: ' . $e->getMessage();
+  }
 
+  // Get URL string embedded param
+  $codven = $_REQUEST['codven'];
 
-    $codven = $_REQUEST['codven'];
-   
-   //abre conexao com o banco
-    if(!mysql_connect("localhost","root","")){
-      exit(mysql_error());
-   }
+  try {
+  $stm = $pdo->prepare("SELECT p.id, p.data, p.codcli, c.nomecli, p.codven, p.formpgto, p.condpgto,
+                        p.totped, p.status, p.obs FROM pedido AS p, cliente AS c 
+                        WHERE p.codcli = c.id AND p.codven = :codven");
+  $stm->bindParam(':codven', $codven);
+  $stm->execute();
+  $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
+  catch (PDOException $e) {
+    echo 'Prepared Statememnt Failed: ' . $e->getMessage();
+  }
 
-   if (!mysql_select_db("base_dados")){
-      exit(mysql_erro());
-   }
+  // Return JSON Object
+  print(json_encode($rows));
+  //echo json_last_error_msg();
 
-  // Sql de consulta
-    $sql=("select * from pedido where codven = '".$_REQUEST['codven']."' ");
-
-    $resultado=mysql_query($sql);
-    if (mysql_num_rows($resultado) > 0) {
-       $sql= mysql_query("select pedido.id,pedido.data,pedido.codcli,cliente.nomecli,pedido.codven,pedido.formpgto,pedido.condpgto,pedido.totped,pedido.status,pedido.obs from pedido,cliente  where pedido.codcli = cliente.id and pedido.codven = '".$_REQUEST['codven']."' ");
-
-       while($linha=mysql_fetch_assoc($sql))  $result[]=$linha;
-       print(json_encode($result));
-       mysql_close();}
-
-   
+  // Close PDO
+  $pdo = null
 ?>
- 
-

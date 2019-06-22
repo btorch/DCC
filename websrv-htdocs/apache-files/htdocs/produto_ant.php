@@ -1,36 +1,30 @@
 <?php
-if (@mysql_connect("localhost", "root", "")) {
+  require_once('./includes/dbconnect_pdo.php');
 
-    $grupo = $_REQUEST['grupo'];
+  // Connection to DB
+  try {
+    $pdo = db_connect();
+    //$pdo->exec('SET NAMES utf8');
+  catch (PDOException $e) {
+    echo 'Connection failed: ' . $e->getMessage();
+  }
 
-  
-   //abre conexao com o banco
-    if(!mysql_connect("localhost","root","")){
-      exit(mysql_error());
-   }
+  // Get URL string embedded param
+  $grupo = $_REQUEST['grupo'];
 
-   if (!mysql_select_db("base_dados")){
-      exit(mysql_erro());
-   }
+  try {
+    $stm = $pdo->prepare("SELECT * FROM produto WHERE grupo = :grupo");
+    $stm->bindParam(':grupo', $grupo);
+    $stm->execute();
+    $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
+  catch (PDOException $e) {
+    echo 'Prepared Statememnt Failed: ' . $e->getMessage();
+  }
 
-  // Sql de consulta
-    $sql=("select * from PRODUTO where grupo = '".$_REQUEST['grupo']."' ");
+  // Return JSON Object
+  print(json_encode($rows));
+  //echo json_last_error_msg();
 
-    $resultado=mysql_query($sql);
-    if (mysql_num_rows($resultado) > 0) {
-       $sql= mysql_query("select * from PRODUTO");
-       $sql= mysql_query("select * from PRODUTO where grupo = '".$_REQUEST['grupo']."' ");
-
-       while($linha=mysql_fetch_assoc($sql))  $result[]=$linha;
-       print(json_encode($result));
-       mysql_close();}
-   }
-      else { 
-          echo "N";   
-
-        }    
-         
+  // Close PDO
+  $pdo = null  
 ?>
- 
-
- 

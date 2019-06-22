@@ -1,34 +1,26 @@
 <?php
+  require_once('./includes/dbconnect_pdo.php');
+
+  // Connection to DB
+  try {
+    $pdo = db_connect();
+    $pdo->exec('SET NAMES utf8');
+  catch (PDOException $e) {
+    echo 'Connection Failed: ' . $e->getMessage();
+  }
+
+  try {
+    $stm = $pdo->prepare("SELECT * FROM prdnf");
+    $stm->execute();
+    $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
+  catch (PDOException $e) {
+    echo 'Prepared Statememnt Failed: ' . $e->getMessage();
+  }
+
+  // Return JSON Object
+  print(json_encode($rows));
+  //echo json_last_error_msg();
  
-if (@mysql_connect("localhost", "root", "")) {
-
-   //abre conexao com o banco
-    if(!mysql_connect("localhost","root","")){
-      exit(mysql_error());
-    mysql_set_charset('utf8');
-   }
-
-   if (!mysql_select_db("base_dados")){
-      exit(mysql_erro());
-   }
-
-    $sql=("select * from prdnf");
-
-    $resultado=mysql_query($sql);
-
-    if (mysql_num_rows($resultado) > 0) {
-
-       $sql= mysql_query("select * from prdnf");
-       while($linha=mysql_fetch_assoc($sql))  $result[]=$linha;
-       print(json_encode($result));
-       mysql_close();}
-         
-   }
-      else { 
-          echo "N";   
-
-        }    
-
+  // Close PDO
+  $pdo = null
 ?>
-
-  
