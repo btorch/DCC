@@ -4,9 +4,12 @@
   // Connection to DB
   $pdo = db_connect();
 
-  $stm = $pdo->query("SELECT * FROM classe");
+  // Run Prepared Statement
+  $stm = $pdo->prepare("SELECT * FROM classe");
+  $stm->execute()  
   $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
   print(json_encode($rows));
 
+  // Close PDO
   $pdo = null;
 ?>

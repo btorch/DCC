@@ -1,32 +1,19 @@
 <?php
-if (@mysql_connect("localhost", "root", "")) {
-   
-    $codven = $_REQUEST['codven'];
+  require_once('./includes/dbconnect_pdo.php');
 
-   //abre conexao com o banco
-    if(!mysql_connect("localhost","root","")){
-      exit(mysql_error());
-   }
+  // Connection to DB
+  $pdo = db_connect();
 
-   if (!mysql_select_db("base_dados")){
-      exit(mysql_erro());
-   }
+  // Get URL string embedded param
+  $codven = $_REQUEST['codven'];
 
-  // Sql de consulta
-    $sql=("select * from CLIENTE where codven = '".$_REQUEST['codven']."' ");
-    $resultado=mysql_query($sql);
-    if (mysql_num_rows($resultado) > 0) {
-       $sql= mysql_query("select * from CLIENTE where codven = '".$_REQUEST['codven']."' ");
-       while($linha=mysql_fetch_assoc($sql))  $result[]=$linha;
-       print(json_encode($result));
-       mysql_close();}
-    }
-      else { 
-          echo "N";   
+  // Run Prepared Statement
+  $stm-prepare("SELECT * FROM cliente WHERE codven = :codeven");
+  $stm->bindParam(':codven', $codven);
+  $stm->execute();
+  $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
+  print(json_encode($rows));
 
-        }    
-        
-
+  // Close PDO 
+  $pdo = null
 ?>
- 
-

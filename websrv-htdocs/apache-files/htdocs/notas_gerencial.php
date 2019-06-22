@@ -1,37 +1,18 @@
 <?php
-if (@mysql_connect("localhost", "root", "")) {
+  require_once('./includes/dbconnect_pdo.php');
+
+  // Connection to DB
+  $pdo = db_connect();
+
+  // Get URL string embedded param
+  $codven = $_REQUEST['codven'];
+
+  $stm = $pdo->prepare("SELECT * FROM notas");
+  $stm->execute();
+  $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
+  print(json_encode($rows));
+  // echo json_last_error_msg();
   
-   //abre conexao com o banco
-    if(!mysql_connect("localhost","root","")){
-      exit(mysql_error());
-    mysql_set_charset('utf8');
-   }
-
-   if (!mysql_select_db("base_dados")){
-      exit(mysql_erro());
-   }
-
-    $sql=("select * from notas");
-
-    $resultado=mysql_query($sql);
-
-    if (mysql_num_rows($resultado) > 0) {
-
-       $sql= mysql_query("select * from notas");
-       while($linha=mysql_fetch_assoc($sql))  $result[]=$linha;
-       print(json_encode($result));
-       mysql_close();}
-         
-   }
-      else { 
-          echo "N";   
-
-        }    
-
-
-         
-
+  // Close PDO
+  $pdo = null
 ?>
-
-
-  

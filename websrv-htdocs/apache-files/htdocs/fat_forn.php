@@ -1,42 +1,18 @@
 <?php
-   
-if (@mysql_connect("localhost", "root", "")) {
+  require_once('./includes/dbconnect_pdo.php');
 
-   //abre conexao com o banco
-    if(!mysql_connect("localhost","root","")){
-      exit(mysql_error());
-    mysql_set_charset('utf8');
-   }
+  // Connection to DB
+  $pdo = db_connect();
 
-   if (!mysql_select_db("base_dados")){
-      exit(mysql_erro());
-   }
+  // Run Prepared Statement
+  $stm = $pdo->prepare("SELECT prdnf.codfor AS forn,grupo.descricao,sum(prdnf.total) AS geral FROM grupo,prdnf
+                        WHERE EXTRACT(month FROM prdnf.data) = '01' AND prdnf.codfor <> '' AND prdnf.codfor = grupo.id
+                        GROUP BY prdnf.codfor");
+  $stm->execute();
+  $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
+  print(json_encode($rows));
+  //echo json_last_error_msg();
 
-    $sql=("select prdnf.codfor as forn,grupo.descricao,sum(prdnf.total) as geral from grupo,prdnf
-           where extract(month from prdnf.data) = '01' and prdnf.codfor <> '' and prdnf.Codfor = grupo.id
-           group by prdnf.codfor ");
-
-    $resultado=mysql_query($sql);
-
-    if (mysql_num_rows($resultado) > 0) {
-
-       $sql= mysql_query("select prdnf.codfor as forn,grupo.descricao,sum(prdnf.total) as geral from grupo,prdnf
-                          where extract(month from prdnf.data) = '01' and prdnf.codfor <> '' and prdnf.Codfor = grupo.id
-                          group by prdnf.codfor");
-   
-   
-
-       while($linha=mysql_fetch_assoc($sql))  $result[]=$linha;
-       print(json_encode($result));
-       mysql_close();}
-         
-   }
-      else { 
-          echo "N";   
-
-        }    
-
+  // Close PDO
+  $pdo = null 
 ?>
-
-
-  

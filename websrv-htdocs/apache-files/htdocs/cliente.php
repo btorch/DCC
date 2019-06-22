@@ -7,15 +7,17 @@
   // Get URL string embedded param
   $codven = $_REQUEST['codven'];
 
-  $stm = $pdo->query("SELECT cliente.id,cliente.nomecli,cliente.fantasia,cliente.endereco,cliente.nro,
+  // Run Prepared Statement
+  $stm = $pdo->prepare("SELECT cliente.id,cliente.nomecli,cliente.fantasia,cliente.endereco,cliente.nro,
                              cliente.compl,cliente.bairro,cliente.cep,cliente.cidade,cliente.estado,cliente.dtcad,cliven.codven,
                              cliente.fone,cliente.cnpj,cliente.insccli,cliente.ultcompra from cliente,cliven
-                             WHERE cliente.id = cliven.codcli AND cliven.codven = '".$_REQUEST['codven']."' ");
+                             WHERE cliente.id = cliven.codcli AND cliven.codven = :codven ");
 
+  $stm->bindParam(':codven', $codven);
+  $stm->execute();
   $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
   print(json_encode($rows));
-  $pdo = null
 
-  // $sql=("select * from cliven where codven = '".$_REQUEST['codven']."' ");
-   
+  // Close PDO
+  $pdo = null
 ?>
