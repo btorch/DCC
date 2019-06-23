@@ -1,32 +1,52 @@
 <?php
-  
-  if (@mysql_connect("localhost", "root", "")) {
-		
-	} else {
-		echo "N";
-                exit;
-	}
+  require_once('./includes/dbconnect_pdo.php');
 
-    function converteData($data){
+  // Connection to DB
+  try {
+    $pdo = db_connect();
+    //$pdo->exec('SET NAMES utf8');
+  } catch (PDOException $e) {
+    echo 'Connection Failed: ' . $e->getMessage();
+  }
+
+  function converteData($data){
     return (preg_match('/\//',$data)) ? implode('-', array_reverse(explode('/', $data))) : implode('/', array_reverse(explode('-', $data)));
-    }
+  }
 
-      $conn = mysql_connect("localhost", "root", "");
-      $db  = mysql_select_db("base_dados");
+  // Get Data - assuming from a form method
+  $id = $_GET['id'];
+  $data = $_GET['data'];
+  $codcli = $_GET['codcli'];
+  $codven = $_GET['codven'];
+  $condpgto = $_GET['condpgto'];
+  $formpgto = $_GET['formpgto'];
+  $totped  = $_GET['totped'];
+  $status = $_GET['status'];
+  $obs = $_GET['obs'];
 
-      $sql=("delete from pedido where id = '".$_GET['id']."' and codven = '".$_GET['codven']."' ");
-      $query = mysql_query($sql);
+  try {
+    $stm = $pdo->prepare("DELETE FROM pedido WHERE id = :id AND codven = :codven");
+    $stm->bindParam(':id', $id);
+    $stm->bindParam(':codven', $codven);
+    $stm->execute();
+  } catch (PDOException $e) {
+    echo 'Prepared Statememnt Failed: ' . $e->getMessage();
+  }
 
-
-      $SQL = "insert into pedido (id,dta_lanc,data,codcli,codven,condpgto,formpgto,totped,status,obs)";
-      $SQL .= " values ('".$_GET['id']."',NOW() , '".$_GET['data']."', '".$_GET['codcli']."', '".$_GET['codven']."', '".$_GET['condpgto']."','".$_GET['formpgto']."','".$_GET['totped']."','".$_GET['status']."','".$_GET['obs']."')";
-      $query = mysql_query($SQL);
-      if (mysql_affected_rows($conn) > 0 ) {
-         echo "Y";
-         } else {
-            echo "N";
-        }
-   
-  ?>
-
-
+  try {
+    $stm = $pdo->prepare("INSERT INTO pedido (id, dta_lanc, data, codcli, codven, condpgto, formpgto, totped, status, obs)
+                          VALUES (:id, NOW(), :data, :codcli, :codven, :condpgto, :formpgto, :totped, :status, :obs");                    
+    $stm->bindParam(':id', $id);
+    $stm->bindParam(':data', $data);
+    $stm->bindParam(':codcli', $codcli);
+    $stm->bindParam(':codven', $codven);
+    $stm->bindParam(':condpgto', $condpgto);
+    $stm->bindParam(':formpgto', $formpgto);
+    $stm->bindParam(':totped', $totped);
+    $stm->bindParam(':status', $status);
+    $stm->bindParam(':obs', $obs);
+    $stm->execute();
+  } catch (PDOException $e) {
+    echo 'Prepared Statememnt Failed: ' . $e->getMessage();
+  }
+?>

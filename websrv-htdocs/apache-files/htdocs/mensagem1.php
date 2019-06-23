@@ -1,27 +1,25 @@
 <?php
+  require_once('./includes/dbconnect_pdo.php');
 
-   
-    $codven = $_REQUEST['codven'];
+  // Connection to DB
+  try {
+    $pdo = db_connect();
+    //$pdo->exec('SET NAMES utf8');
+  } catch (PDOException $e) {
+    echo 'Connection Failed: ' . $e->getMessage();
+  }
 
-   //abre conexao com o banco
-    if(!mysql_connect("localhost","root","")){
-      exit(mysql_error());
-   }
+  // Get URL string embedded param
+  $codven = $_REQUEST['codven'];
 
-   if (!mysql_select_db("base_dados")){
-      exit(mysql_erro());
-   }
+  try {
+    $stm = $pdo->prepare("DELETE FROM mensagem WHERE codven = :codven");
+    $stm->bindParam(':codven', $codven);
+    $stm->execute();
+  } catch (PDOException $e) {
+    echo 'Prepared Statememnt Failed: ' . $e->getMessage();
+  }
 
-    $sql=("select * from mensagem where codven = '".$_REQUEST['codven']."' ");
-
-    $resultado=mysql_query($sql);
-
-
-    if (mysql_num_rows($resultado) > 0) {
-
-       $sql= mysql_query("delete from mensagem where codven = '".$_REQUEST['codven']."'");
-       mysql_close();}
-
-    
+  // Close PDO
+  $pdo = null
 ?>
-

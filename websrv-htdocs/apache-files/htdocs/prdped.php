@@ -1,28 +1,50 @@
 <?php
-      if (@mysql_connect("localhost", "root", "")) {
-		
-	} else {
-		echo "N";
-                exit;
-	}
+  require_once('./includes/dbconnect_pdo.php');
 
+  // Connection to DB
+  try {
+    $pdo = db_connect();
+    //$pdo->exec('SET NAMES utf8');
+  } catch (PDOException $e) {
+    echo 'Connection Failed: ' . $e->getMessage();
+  }
 
-      $conn = mysql_connect("localhost", "root", "");
-      $db  = mysql_select_db("base_dados");
+  // Get Data - assuming from a form method
+  $id = $_GET['id'];
+  $data = $_GET['data'];
+  $codcli = $_GET['codcli'];
+  $codven = $_GET['codven'];
+  $cdpro = $_GET['cdpro'];
+  $qtd = $_GET['qtd'];
+  $prunit  = $_GET['prunit'];
+  $desconto = $_GET['desconto'];
+  $total = $_GET['total'];
 
-      $sql=("delete from prdped where id = '".$_GET['id']."' and codven = '".$_GET['codven']."' and cdpro = '".$_GET['cdpro']."' ");
-      $query = mysql_query($sql);
+  try {
+    $stm = $pdo->prepare("DELETE FROM prdped WHERE id = :id AND codven = :codven AND cdpro = :cdpro");
+    $stm->bindParam(':id', $id);
+    $stm->bindParam(':codven', $codven);
+    $stm->bindParam(':cdpro', $cdpro);
+    $stm->execute();
+  } catch (PDOException $e) {
+    echo 'Prepared Statememnt Failed: ' . $e->getMessage();
+  }
 
+  try {
+    $stm = $pdo->prepare("INSERT INTO prdped (id, data, codcli, codven, cdpro, qtd, prunit, desconto, total)
+                          VALUES (:id, :data, :codcli, :codven, :cdpro, :qtd, :prunit, :desconto, :total");
+    $stm->bindParam(':id', $id);
+    $stm->bindParam(':data', $data);
+    $stm->bindParam(':codcli', $codcli);
+    $stm->bindParam(':codven', $codven);
+    $stm->bindParam(':cdpro', $cdpro);
+    $stm->bindParam(':qtd', $qtd);
+    $stm->bindParam(':prunit', $prunit);
+    $stm->bindParam(':desconto', $desconto);
+    $stm->bindParam(':total', $total);
+    $stm->execute();
+  } catch (PDOException $e) {
+    echo 'Prepared Statememnt Failed: ' . $e->getMessage();
+  }
 
-      $SQL = "insert into prdped (id,data,codcli,codven,cdpro,qtd,prunit,desconto,total)";
-      $SQL .= " values ('".$_GET['id']."','".$_GET['data']."','".$_GET['codcli']."','".$_GET['codven']."','".$_GET['cdpro']."','".$_GET['qtd']."','".$_GET['prunit']."','".$_GET['desconto']."','".$_GET['total']."')";
-      $query = mysql_query($SQL);
-      if (mysql_affected_rows($conn) > 0 ) {
-         echo "Y";
-         } else {
-            echo "N";
-        }
- 
-  ?>
-
-
+?>

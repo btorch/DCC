@@ -5,7 +5,7 @@
   try {
     $pdo = db_connect();
     //$pdo->exec('SET NAMES utf8');
-  catch (PDOException $e) {
+  } catch (PDOException $e) {
     echo 'Connection failed: ' . $e->getMessage();
   }
 
@@ -17,7 +17,7 @@
     $stm->bindParam(':grupo', $grupo);
     $stm->execute();
     $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
-  catch (PDOException $e) {
+  } catch (PDOException $e) {
     echo 'Prepared Statememnt Failed: ' . $e->getMessage();
   }
 
