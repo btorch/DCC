@@ -21,9 +21,13 @@
     echo 'Prepared Statememnt Failed: ' . $e->getMessage();
   }
 
-  // Return JSON Object
-  print(json_encode($rows));
-  //echo json_last_error_msg();
+  if ( count($rows) > 0 ){
+    // Return JSON Object
+    print(json_encode($rows));
+    //echo json_last_error_msg();
+  } else {
+    echo "N";
+  }
 
   // Close PDO
   $pdo = null  

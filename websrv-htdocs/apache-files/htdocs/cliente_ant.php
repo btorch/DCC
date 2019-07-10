@@ -13,7 +13,7 @@
   $codven = $_REQUEST['codven'];
 
   try {
-    $stm-prepare("SELECT * FROM cliente WHERE codven = :codeven");
+    $stm = $pdo->prepare("SELECT * FROM cliente WHERE codven = :codven");
     $stm->bindParam(':codven', $codven);
     $stm->execute();
     $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
@@ -21,9 +21,13 @@
     echo 'Prepared Statememnt Failed: ' . $e->getMessage();
   }
 
-  // Return JSON Object
-  print(json_encode($rows));
-  //echo json_last_error_msg();
+  if ( count($rows) > 0 ){
+    // Return JSON Object
+    print(json_encode($rows));
+    //echo json_last_error_msg();
+  } else {
+    echo "N";
+  }
 
   // Close PDO
   $pdo = null

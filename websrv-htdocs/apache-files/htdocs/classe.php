@@ -11,7 +11,7 @@
 
   try {
     $stm = $pdo->prepare("SELECT * FROM classe");
-    $stm->execute()  
+    $stm->execute();
     $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
   } catch (PDOException $e) {
     echo 'Prepared Statememnt Failed: ' . $e->getMessage();

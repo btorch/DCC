@@ -3,8 +3,7 @@
 
   // Connection to DB
   try {
-    $pdo = db_connect();
-    //$pdo->exec('SET NAMES utf8');
+    $pdo = db_connect("rw");
   } catch (PDOException $e) {
     echo 'Connection Failed: ' . $e->getMessage();
   }
@@ -17,18 +16,20 @@
   $codjust = $_GET['codjust'];
 
   try {
-    $stm = $pdo->prepare("INSERT INTO justcli (id, codven, data, hora, codjust) VALUES (:id, :codven, :data, :hora, :codjust");
+    $stm = $pdo->prepare("INSERT INTO justcli (id, codven, data, hora, codjust) VALUES (:id, :codven, :data, :hora, :codjust)");
     $stm->bindParam(':id', $id);
-    $stm->bindParam(':data', $data);
-    $stm->bindParam(':codcli', $codcli);
     $stm->bindParam(':codven', $codven);
-    $stm->bindParam(':condpgto', $condpgto);
-    $stm->bindParam(':formpgto', $formpgto);
-    $stm->bindParam(':totped', $totped);
-    $stm->bindParam(':status', $status);
-    $stm->bindParam(':obs', $obs);
+    $stm->bindParam(':data', $data);
+    $stm->bindParam(':hora', $hora);
+    $stm->bindParam(':codjust', $codjust);
     $stm->execute();
   } catch (PDOException $e) {
     echo 'Prepared Statememnt Failed: ' . $e->getMessage();
+  }
+
+  if ( $stm->rowCount() > 0 ) {
+    echo "Y";
+  } else {
+    echo "N";
   }
 ?>

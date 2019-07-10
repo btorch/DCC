@@ -4,7 +4,7 @@
   // Connection to DB
   try {
     $pdo = db_connect();
-    $pdo->exec('SET NAMES utf8');
+    //$pdo->exec('SET NAMES utf8');
   } catch (PDOException $e) {
     echo 'Connection Failed: ' . $e->getMessage();
   }
@@ -19,9 +19,13 @@
     echo 'Prepared Statememnt Failed: ' . $e->getMessage();
   }
 
-  // Return JSON Object
-  print(json_encode($rows));
-  //echo json_last_error_msg();
+  if ( count($rows) > 0 ){
+    // Return JSON Object
+    print(json_encode($rows));
+    //echo json_last_error_msg();
+  } else {
+    echo "N";
+  }
 
   // Close PDO
   $pdo = null

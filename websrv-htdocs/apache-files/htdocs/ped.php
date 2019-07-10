@@ -3,9 +3,10 @@
 
   // Connection to DB
   try {
-    $pdo = db_connect();
+    $pdo = db_connect("rw");
     //$pdo->exec('SET NAMES utf8');
   } catch (PDOException $e) {
+    echo "N";
     echo 'Connection Failed: ' . $e->getMessage();
   }
 
@@ -22,7 +23,7 @@
 
   try {
     $stm = $pdo->prepare("INSERT INTO pedido (id, data, codcli, codven, condpgto, formpgto, totped, status, obs)
-                          VALUES (:id, :data, :codcli, :codven, :condpgto, :formpgto, :totped, :status, :obs");
+                          VALUES (:id, :data, :codcli, :codven, :condpgto, :formpgto, :totped, :status, :obs)");
     $stm->bindParam(':id', $id);
     $stm->bindParam(':data', $data);
     $stm->bindParam(':codcli', $codcli);
@@ -36,4 +37,12 @@
   } catch (PDOException $e) {
     echo 'Prepared Statememnt Failed: ' . $e->getMessage();
   }
+
+
+  if ( $stm->rowCount() > 0 ) {
+    echo "Y";
+  } else {
+    echo "N";
+  }
+
 ?>

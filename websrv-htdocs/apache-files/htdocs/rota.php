@@ -4,8 +4,9 @@
   // Connection to DB
   try {
     $pdo = db_connect();
-    $pdo->exec('SET NAMES utf8');
+    //$pdo->exec('SET NAMES utf8');
   } catch (PDOException $e) {
+    echo "N";
     echo 'Connection Failed: ' . $e->getMessage();
   }
 

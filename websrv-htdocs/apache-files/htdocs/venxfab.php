@@ -13,7 +13,7 @@
   $codven = $_REQUEST['codven'];
 
   try {
-    $stm = $pdo->prepare("SELECT * p.id, p.nomepro, p.gramatura, p.und, p.grupo, p.codref, p.preco, p.qtdest
+    $stm = $pdo->prepare("SELECT p.id, p.nomepro, p.gramatura, p.und, p.grupo, p.codref, p.preco, p.qtdest
                           FROM produto AS p, venxfab AS v WHERE p.grupo = v.codgru AND v.codven = :codven");
     $stm->bindParam(':codven', $codven);
     $stm->execute();
