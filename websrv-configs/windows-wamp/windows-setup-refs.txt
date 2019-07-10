@@ -1,0 +1,22 @@
+References used to setup Apache + PHP on Windows 2008 R2 Server
+
+https://httpd.apache.org/docs/current/platform/windows.html
+https://www.apachelounge.com/download/
+https://www.apachelounge.com/viewtopic.php?p=22488
+http://httpd.apache.org/docs/2.4/programs/rotatelogs.html
+https://www.dionysopoulos.me/apache-mysql-php-server-on-windows-with-multiple-simultaneous-php-versions/
+https://httpd.apache.org/docs/2.4/upgrading.html
+https://ryansechrest.com/2014/03/managing-organizing-apache-virtual-host-files/
+http://www.jochenhebbrecht.be/site/2015-09-24/windows/rotating-apache-httpd-accesslog-and-errorlog-windows
+https://www.farinspace.com/windows-apache-php-fastcgi/
+https://httpd.apache.org/mod_fcgid/mod/mod_fcgid.html
+http://fuzzytolerance.info/blog/2009/11/09/2009-11-09-apache-mod_fcgid-and-php-on-windows/
+https://httpd.apache.org/docs/2.4/howto/access.html
+https://httpd.apache.org/docs/2.4/expr.html
+https://httpd.apache.org/docs/2.4/mod/mod_authz_core.html
+https://httpd.apache.org/docs/2.4/howto/auth.html
+https://zend18.zendesk.com/hc/en-us/articles/206790567-Howto-Setting-Up-Apache-PHP-NTS-and-Guard-7-Loader-on-Windows
+http://www.microsoft.com/en-us/download/details.aspx?id=30679
+https://pear.php.net/manual/en/installation.getting.php
+https://nikic.github.io/2011/12/03/Manually-installing-PEAR-on-Windows.html
+
