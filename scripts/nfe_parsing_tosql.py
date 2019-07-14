@@ -40,12 +40,12 @@ def insert_data(nfefile,**db_config_dict):
     '''
     nfe_numero = int(doc['nfeProc']['NFe']['infNFe']['ide']['nNF'])
     data = dateutil.parser.parse(doc['nfeProc']['NFe']['infNFe']['ide']['dhSaiEnt'])
-    data_saida = data.strftime('%Y-%m-%d %H:%M:%S')
+    nfe_data = data.strftime('%Y-%m-%d %H:%M:%S')
     '''
     Dados do Fornecedor
     '''
-    emissor_cnpj = str(doc['nfeProc']['NFe']['infNFe']['emit']['CNPJ'])
     emissor_nome = str(doc['nfeProc']['NFe']['infNFe']['emit']['xNome'])
+    emissor_cnpj = str(doc['nfeProc']['NFe']['infNFe']['emit']['CNPJ'])
 
     '''
     Dados do Destinatario
@@ -58,7 +58,7 @@ def insert_data(nfefile,**db_config_dict):
     '''
     valor_bruto = float(doc['nfeProc']['NFe']['infNFe']['total']['ICMSTot']['vBC'])
     valor_nota = float(doc['nfeProc']['NFe']['infNFe']['total']['ICMSTot']['vNF'])
-    prod_vol = int(doc['nfeProc']['NFe']['infNFe']['transp']['vol']['qVol'])
+    prod_volumes = int(doc['nfeProc']['NFe']['infNFe']['transp']['vol']['qVol'])
     prod_embalagem = str(doc['nfeProc']['NFe']['infNFe']['transp']['vol']['esp']).capitalize()
 
 
@@ -67,24 +67,34 @@ def insert_data(nfefile,**db_config_dict):
         if mdb_conn.is_connected():
             db_info = mdb_conn.get_server_info()
             print("Conectado ao servidor Maria DB.\nMaria DB {0}".format(db_info))
+            db_cursor = mdb_conn.cursor(prepared=True)
     except mariadb.Error as error:
         print("Error: {}".format(error))
+ 
+
+    transitando_nfe_insert = """INSERT INTO transitando_nfe (nfe_numero,nfe_data,emissor_nome,
+                                emissor_cnpj,valor_bruto,valor_nota,prod_volumes,prod_embalagem) 
+                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"""
+    transitando_nfe_tuple = (nfe_numero,nfe_data,emissor_nome,emissor_cnpj,
+                             valor_bruto,valor_nota,prod_volumes,prod_embalagem)
+
+    try:
+        sql_result = db_cursor.execute(transitando_nfe_insert,transitando_nfe_tuple)
+        mdb_conn.commit()
+        print("Valores inseridos na tabela transitando_nfe")
+    except mariadb.Error as error:
+        mdb_conn.rollback()
+        print("Erro inserindo valores na tabela transitando_nfe: {0}".format(error))
     finally:
-        if (mdb_conn.is_connected()):
+        if mdb_conn.is_connected():
+            db_cursor.close()
             mdb_conn.close()
+            print("DB connecao fechada")
 
 
-        
+
+
     '''
-    print("\n")
-
-    print ("Conectado ao servidor Maria DB {0}".format(nfe_numero))
-    print ("Data: {0}".format(data_saida))
-    print ("Fornecedor Nome: {0} (CNPJ: {1})".format(emissor_nome,emissor_cnpj))
-    print ("Valor Bruto: {0} \t Valor Nota: {1}".format(locale.currency(valor_bruto,grouping=True),
-                                                        locale.currency(valor_nota,grouping=True)))
-    print ("Quantidade Volumes: {0} {1}".format(prod_vol,prod_embalagem.capitalize()))
-
     table = PrettyTable()
     table.field_names =  ["Item","Codigo","Descricao","Quantidade"]
 
@@ -146,7 +156,7 @@ def main():
         'password': options.dbpass,
         'host': options.dbhost,
         'database': options.dbname,
-        'charset':  'utf8mb4'
+        'charset':  'utf8'
     }
 
     insert_data(options.nfefile,**mariaconn_config_dict)
