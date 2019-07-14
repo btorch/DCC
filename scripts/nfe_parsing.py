@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 # coding=utf-8
 
 import xmltodict
@@ -7,6 +7,7 @@ import sys
 import os
 from optparse import OptionParser
 from prettytable import PrettyTable
+import dateutil.parser
 
 
 '''
@@ -27,9 +28,9 @@ def display (nfefile):
         with open(nfefile) as fd:
             doc = xmltodict.parse(fd.read())
     except IOError as e:
-        print "I/O error({0}): {1}".format(e.errno, e.strerror)
+        print ("I/O error({0}): {1}").format(e.errno, e.strerror)
     except:
-        print "Unexpected error:", sys.exc_info()[0]
+        print ("Unexpected error: {0}").format(sys.exc_info()[0])
     else:
         fd.close()
 
@@ -37,7 +38,8 @@ def display (nfefile):
     Dados Gerais da NFe
     '''
     nfe_numero = int(doc['nfeProc']['NFe']['infNFe']['ide']['nNF'])
-    data_saida = str(doc['nfeProc']['NFe']['infNFe']['ide']['dhSaiEnt'])
+    data = dateutil.parser.parse(doc['nfeProc']['NFe']['infNFe']['ide']['dhSaiEnt'])
+    data_saida = data.strftime('%Y-%m-%d %H:%M:%S')
     '''
     Dados do Fornecedor
     '''
@@ -60,12 +62,13 @@ def display (nfefile):
 
 
     print("\n")
-    print ("Numero NFe: {0}").format(nfe_numero)
+    print ("Numero NFe: {0}".format(nfe_numero))
+    print ("Data: {0}".format(data_saida))
     print ("Fornecedor Nome: {0} (CNPJ: {1})".format(emissor_nome,emissor_cnpj))
     '''print ("Fornecedor CNPJ: {0}".format(emissor_cnpj))'''
     print ("Valor Bruto: {0} \t Valor Nota: {1}".format(locale.currency(valor_bruto,grouping=True),
                                                         locale.currency(valor_nota,grouping=True)))
-    print ("Quantidade Volumes: {0} {1}".format(prod_vol,prod_embalagem))
+    print ("Quantidade Volumes: {0} {1}".format(prod_vol,prod_embalagem.capitalize()))
 
 
     '''
