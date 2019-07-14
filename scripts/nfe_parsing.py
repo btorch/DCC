@@ -1,9 +1,11 @@
-#!/usr/local/bin/python2.7
+#!/usr/bin/env python2.7
+# coding=utf-8
 
 import xmltodict
+import locale
 import sys
 import os
-from optparse import 
+from optparse import OptionParser
 from prettytable import PrettyTable
 
 
@@ -12,9 +14,10 @@ Setting up some environmental variables
 '''
 os.environ['LC_ALL'] = 'C'
 os.environ['LANG'] = 'en_US.UTF-8'
+locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 
-def display(nfefile):
+def display (nfefile):
 
     '''
     Function will open the XML File and 
@@ -27,15 +30,13 @@ def display(nfefile):
         print "I/O error({0}): {1}".format(e.errno, e.strerror)
     except:
         print "Unexpected error:", sys.exc_info()[0]
-        raise
     else:
         fd.close()
-
-
 
     '''
     Dados Gerais da NFe
     '''
+    nfe_numero = int(doc['nfeProc']['NFe']['infNFe']['ide']['nNF'])
     data_saida = str(doc['nfeProc']['NFe']['infNFe']['ide']['dhSaiEnt'])
     '''
     Dados do Fornecedor
@@ -52,14 +53,18 @@ def display(nfefile):
     '''
     Dados de Valor Total
     '''
-    valor_bruto = str(doc['nfeProc']['NFe']['infNFe']['total']['ICMSTot']['vBC'])
-    valor_nota = str(doc['nfeProc']['NFe']['infNFe']['total']['ICMSTot']['vNF'])
+    valor_bruto = float(doc['nfeProc']['NFe']['infNFe']['total']['ICMSTot']['vBC'])
+    valor_nota = float(doc['nfeProc']['NFe']['infNFe']['total']['ICMSTot']['vNF'])
     prod_vol = str(doc['nfeProc']['NFe']['infNFe']['transp']['vol']['qVol'])
     prod_embalagem = str(doc['nfeProc']['NFe']['infNFe']['transp']['vol']['esp'])
 
 
-    print ("Fornecedor Nome: {0} \t Fornecedor CNPJ: {1}".format(emissor_nome,emissor_cnpj))
-    print ("Valor Bruto: {0} \t Valor Nota: {1}".format(valor_bruto,valor_nota))
+    print("\n")
+    print ("Numero NFe: {0}").format(nfe_numero)
+    print ("Fornecedor Nome: {0} (CNPJ: {1})".format(emissor_nome,emissor_cnpj))
+    '''print ("Fornecedor CNPJ: {0}".format(emissor_cnpj))'''
+    print ("Valor Bruto: {0} \t Valor Nota: {1}".format(locale.currency(valor_bruto,grouping=True),
+                                                        locale.currency(valor_nota,grouping=True)))
     print ("Quantidade Volumes: {0} {1}".format(prod_vol,prod_embalagem))
 
 
@@ -67,19 +72,18 @@ def display(nfefile):
     Visualizar produtos
     '''
     table = PrettyTable()
-    table.field_names =  ["Codigo","Descricao","Quantidade"]
+    table.field_names =  ["Item","Codigo","Descricao","Quantidade"]
 
     num_itens = len(doc['nfeProc']['NFe']['infNFe']['det'])
 
     start_i = 0
-    while start_i < 5:
+    while start_i < num_itens:
 
-        prod_codigo = int(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['cProd'])
-        prod_descri = str(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['xProd'])
+        prod_codigo = str(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['cProd'])
+        prod_descri = doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['xProd']
         prod_quant  = float(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['qCom'])
-
-        table.add_row([prod_codigo,prod_descri,prod_quant])
         start_i += 1
+        table.add_row([start_i,prod_codigo,prod_descri,prod_quant])
 
     print (table)
 
@@ -97,8 +101,7 @@ def main():
         help='Local do aquivo XML da NFE [default: %default]'
     )
     (options, args) = parser.parse_args()
-    display(options.nfefile)
-
+    display (options.nfefile)
 
     return 0
 
