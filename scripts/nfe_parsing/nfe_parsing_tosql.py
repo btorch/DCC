@@ -62,6 +62,10 @@ def insert_data(nfefile,**db_config_dict):
     prod_embalagem = str(doc['nfeProc']['NFe']['infNFe']['transp']['vol']['esp']).capitalize()
 
 
+    '''
+    Conectando a MariaDB
+    '''
+
     try: 
         mdb_conn = mariadb.connect(**db_config_dict)
         if mdb_conn.is_connected():
@@ -70,8 +74,12 @@ def insert_data(nfefile,**db_config_dict):
             db_cursor = mdb_conn.cursor(prepared=True)
     except mariadb.Error as error:
         print("Error: {}".format(error))
+        sys.exit(1)
  
 
+    '''
+    Inserindo os dados Gerais da NFe na tabela transitando_nfe
+    '''
     transitando_nfe_insert = """INSERT INTO transitando_nfe (nfe_numero,nfe_data,emissor_nome,
                                 emissor_cnpj,valor_bruto,valor_nota,prod_volumes,prod_embalagem) 
                                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"""
@@ -85,32 +93,43 @@ def insert_data(nfefile,**db_config_dict):
     except mariadb.Error as error:
         mdb_conn.rollback()
         print("Erro inserindo valores na tabela transitando_nfe: {0}".format(error))
+        sys.exit(1)
+    
+
+    '''
+    Inserindo os Items da NFe na tabela transitando_nfe_items
+    '''
+
+    transitando_nfe_items_insert  = """INSERT INTO transitando_nfe_items (nfe_numero,
+                                       nfe_data,prod_codigo,prod_descri,prod_quant) 
+                                       VALUES (%s,%s,%s,%s,%s)"""
+
+    num_itens = len(doc['nfeProc']['NFe']['infNFe']['det'])
+
+    try:
+        start_i = 0
+        while start_i < num_itens:
+
+            prod_codigo = str(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['cProd'])
+            prod_descri = doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['xProd']
+            prod_quant  = float(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['qCom'])
+
+            transitando_nfe_items_tuple = (nfe_numero,nfe_data,prod_codigo,prod_descri,prod_quant)
+            sql_result = db_cursor.execute(transitando_nfe_items_insert,transitando_nfe_items_tuple)
+            start_i += 1
+        
+        mdb_conn.commit()
+        print("Valores inseridos na tabela transitando_nfe_items")
+    except mariadb.Error as error:
+        mdb_conn.rollback()
+        print("Erro inserindo valores na tabela transitando_nfe: {0}".format(error))
+        sys.exit(1)
     finally:
         if mdb_conn.is_connected():
             db_cursor.close()
             mdb_conn.close()
             print("DB connecao fechada")
 
-
-
-
-    '''
-    table = PrettyTable()
-    table.field_names =  ["Item","Codigo","Descricao","Quantidade"]
-
-    num_itens = len(doc['nfeProc']['NFe']['infNFe']['det'])
-
-    start_i = 0
-    while start_i < num_itens:
-
-        prod_codigo = str(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['cProd'])
-        prod_descri = doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['xProd']
-        prod_quant  = float(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['qCom'])
-        start_i += 1
-        table.add_row([start_i,prod_codigo,prod_descri,prod_quant])
-
-    print (table)
-    '''
 
 def main():
     '''
