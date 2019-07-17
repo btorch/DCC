@@ -3,9 +3,11 @@
 
 import xmltodict
 import locale
+import time
 import sys
 import os
 from optparse import OptionParser
+from configparser import ConfigParser
 from prettytable import PrettyTable
 import dateutil.parser
 import mysql.connector as mariadb
@@ -15,56 +17,51 @@ import mysql.connector as mariadb
 Setting up some environmental variables
 '''
 os.environ['LC_ALL'] = 'C'
-os.environ['LANG'] = 'en_US.UTF-8'
+#os.environ['LANG'] = 'en_US.UTF-8'
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 
-def insert_data(nfefile,**db_config_dict):
 
+def parse_config(configfile):
     '''
-    Function will open the XML File and 
-    transform it into a dict object
+    Takes care of parsing the configuration file
     '''
-    try: 
-        with open(nfefile) as fd:
-            doc = xmltodict.parse(fd.read())
-    except IOError as e:
-        print ("I/O error({0}): {1}").format(e.errno, e.strerror)
-    except:
-        print ("Unexpected error: {0}").format(sys.exc_info()[0])
+    results = {}
+    c = ConfigParser()
+    if not c.read(configfile):
+        raise Exception("Arquivo de config vazio (Code: 204)")
+        sys.exit(1)
     else:
-        fd.close()
+        """ Get Defaults """
+        conf = dict(c.defaults())
+        results['xml_directory'] = conf.get('xml_directory', './XML')
 
-    '''
-    Dados Gerais da NFe
-    '''
-    nfe_numero = int(doc['nfeProc']['NFe']['infNFe']['ide']['nNF'])
-    data = dateutil.parser.parse(doc['nfeProc']['NFe']['infNFe']['ide']['dhSaiEnt'])
-    nfe_data = data.strftime('%Y-%m-%d %H:%M:%S')
-    '''
-    Dados do Fornecedor
-    '''
-    emissor_nome = str(doc['nfeProc']['NFe']['infNFe']['emit']['xNome'])
-    emissor_cnpj = str(doc['nfeProc']['NFe']['infNFe']['emit']['CNPJ'])
+    if c.has_section('mysql'):
+        conf = dict(c.items('mysql'))
+        results['host'] = conf.get('host', '127.0.0.1')
+        results['user'] = conf.get('user', 'web01')
+        results['pass'] = conf.get('pass','')
+        results['db'] = conf.get('db','fornecedor_in')
+    else:
+        raise Exception("Dados de Mysql nao encontrado (Code: 404)")
+        sys.exit(1)
 
-    '''
-    Dados do Destinatario
-    '''
-    dest_cnpj = str(doc['nfeProc']['NFe']['infNFe']['dest']['CNPJ'])
-    dest_nome = str(doc['nfeProc']['NFe']['infNFe']['dest']['xNome'])
-
-    '''
-    Dados de Valor Total
-    '''
-    valor_bruto = float(doc['nfeProc']['NFe']['infNFe']['total']['ICMSTot']['vBC'])
-    valor_nota = float(doc['nfeProc']['NFe']['infNFe']['total']['ICMSTot']['vNF'])
-    prod_volumes = int(doc['nfeProc']['NFe']['infNFe']['transp']['vol']['qVol'])
-    prod_embalagem = str(doc['nfeProc']['NFe']['infNFe']['transp']['vol']['esp']).capitalize()
+    return results
 
 
-    '''
-    Conectando a MariaDB
-    '''
+def get_xml_files(xml_directory):
+
+    month_location = time.strftime("%m %B")
+    full_dir = xml_directory + '/' + month_location 
+    
+    abs_path_files = []
+    for file in os.listdir(full_dir):
+        abs_path_files.append(full_dir + '/' + file)
+
+    return abs_path_files
+
+
+def open_db_conn(**db_config_dict):
 
     try: 
         mdb_conn = mariadb.connect(**db_config_dict)
@@ -75,7 +72,67 @@ def insert_data(nfefile,**db_config_dict):
     except mariadb.Error as error:
         print("Error: {}".format(error))
         sys.exit(1)
- 
+
+    return (mdb_conn,db_cursor)
+
+
+def insert_data(nfefile,mdb_conn,db_cursor):
+
+    '''
+    Function will open the XML File and 
+    transform it into a dict object
+    '''
+    try: 
+        with open(nfefile) as fd:
+            print("Opening {0}".format(nfefile))
+            doc = xmltodict.parse(fd.read())
+    except IOError as e:
+        print ("I/O error({0}): {1}").format(e.errno, e.strerror)
+    except:
+        print ("I/O Unexpected error: {0}").format(sys.exc_info()[0])
+    else:
+        fd.close()
+
+
+    '''
+    Dados Gerais da NFe
+    '''
+    ide = doc['nfeProc']['NFe']['infNFe']['ide']
+    nfe_numero = int(ide.get('nNF','00000000'))
+    data = dateutil.parser.parse(ide.get('dhSaiEnt','2019-01-01T00:00:00-00:00'))
+    nfe_data = data.strftime('%Y-%m-%d %H:%M:%S')
+
+    '''
+    Dados do Fornecedor
+    '''
+    emissor = doc['nfeProc']['NFe']['infNFe']['emit']
+    emissor_nome = str(emissor.get('xNome','Nada'))
+    emissor_cnpj = str(emissor.get('CNPJ','XXX'))
+
+    '''
+    Dados do Destinatario
+    '''
+    dest = doc['nfeProc']['NFe']['infNFe']['dest']
+    dest_nome = str(dest.get('xNome','XXX'))
+    dest_cnpj = str(dest.get('CNPJ','XXX'))
+
+    '''
+    Dados de Valor Total
+    '''
+    valor = doc['nfeProc']['NFe']['infNFe']['total']['ICMSTot']
+    valor_bruto = float(valor.get('vBC','0'))
+    valor_nota = float(valor.get('vNF','0'))
+
+    transp = doc['nfeProc']['NFe']['infNFe']['transp']
+
+    if not transp.get('vol'):
+        prod_volumes = 0
+        prod_embalagem = "Nada"
+    else:
+        vols = doc['nfeProc']['NFe']['infNFe']['transp']['vol']
+        prod_volumes = int(vols.get('qVol','0'))
+        prod_embalagem = str(vols.get('esp','Sem embalagem').capitalize())
+
 
     '''
     Inserindo os dados Gerais da NFe na tabela transitando_nfe
@@ -88,11 +145,11 @@ def insert_data(nfefile,**db_config_dict):
 
     try:
         sql_result = db_cursor.execute(transitando_nfe_insert,transitando_nfe_tuple)
-        mdb_conn.commit()
-        print("Valores inseridos na tabela transitando_nfe")
+        '''mdb_conn.commit()'''
+        print("NFe {0} valores inseridos na tabela transitando_nfe".format(nfe_numero))
     except mariadb.Error as error:
         mdb_conn.rollback()
-        print("Erro inserindo valores na tabela transitando_nfe: {0}".format(error))
+        print("NFe {0} Erro inserindo valores na tabela transitando_nfe: {1}".format(nfe_numero,error))
         sys.exit(1)
     
 
@@ -104,31 +161,38 @@ def insert_data(nfefile,**db_config_dict):
                                        nfe_data,prod_codigo,prod_descri,prod_quant) 
                                        VALUES (%s,%s,%s,%s,%s)"""
 
-    num_itens = len(doc['nfeProc']['NFe']['infNFe']['det'])
+    
+    if not isinstance(doc['nfeProc']['NFe']['infNFe']['det'],list):
+        prod_codigo = str(doc['nfeProc']['NFe']['infNFe']['det']['prod']['cProd'])
+        prod_descri = doc['nfeProc']['NFe']['infNFe']['det']['prod']['xProd']
+        prod_quant  = float(doc['nfeProc']['NFe']['infNFe']['det']['prod']['qCom'])
 
-    try:
-        start_i = 0
-        while start_i < num_itens:
+        transitando_nfe_items_tuple = (nfe_numero,nfe_data,prod_codigo,prod_descri,prod_quant)
+        sql_result = db_cursor.execute(transitando_nfe_items_insert,transitando_nfe_items_tuple)
 
-            prod_codigo = str(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['cProd'])
-            prod_descri = doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['xProd']
-            prod_quant  = float(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['qCom'])
+    else:
+        infNFe = doc['nfeProc']['NFe']['infNFe']
+        num_itens = len(infNFe.get('det',''))
 
-            transitando_nfe_items_tuple = (nfe_numero,nfe_data,prod_codigo,prod_descri,prod_quant)
-            sql_result = db_cursor.execute(transitando_nfe_items_insert,transitando_nfe_items_tuple)
-            start_i += 1
-        
-        mdb_conn.commit()
-        print("Valores inseridos na tabela transitando_nfe_items")
-    except mariadb.Error as error:
-        mdb_conn.rollback()
-        print("Erro inserindo valores na tabela transitando_nfe: {0}".format(error))
-        sys.exit(1)
-    finally:
-        if mdb_conn.is_connected():
-            db_cursor.close()
-            mdb_conn.close()
-            print("DB connecao fechada")
+        try:
+            start_i = 0
+            while start_i < num_itens:
+
+                prod_codigo = str(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['cProd'])
+                prod_descri = doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['xProd']
+                prod_quant  = float(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['qCom'])
+
+                transitando_nfe_items_tuple = (nfe_numero,nfe_data,prod_codigo,prod_descri,prod_quant)
+                sql_result = db_cursor.execute(transitando_nfe_items_insert,transitando_nfe_items_tuple)
+                start_i += 1
+            
+            mdb_conn.commit()
+            print("NFe {0} valores inseridos na tabela transitando_nfe_items".format(nfe_numero))
+        except mariadb.Error as error:
+            mdb_conn.rollback()
+            print("NFe {0} Erro inserindo valores na tabela transitando_nfe: {1}".format(nfe_numero,error))
+            sys.exit(1)
+
 
 
 def main():
@@ -137,50 +201,47 @@ def main():
     '''         
     parser = OptionParser(usage="usage: %prog [options]",
                           version="%prog 1.0")
-    parser.add_option("-f", "--file-in",
+    parser.add_option("-c", "--conf",
         action="store", type="string",
-        default="",
-        dest="nfefile",
-        help='Local do aquivo XML da NFE [default: %default]'
-    )
-    parser.add_option("-s", "--db-ip",
-        action="store", type="string",
-        default="127.0.0.1",
-        dest="dbhost",
-        help='IP para connectar ao MariaDB [default: %default]'
-    )
-    parser.add_option("-u", "--db-user",
-        action="store", type="string",
-        default="web01",
-        dest="dbuser",
-        help='User para connectar ao MariaDB [default: %default]'
-    )
-    parser.add_option("-p", "--db-pass",
-        action="store", type="string",
-        default="null",
-        dest="dbpass",
-        help='Password para connectar ao MariaDB [default: %default]'
-    )
-    parser.add_option("-d", "--db-name",
-        action="store", type="string",
-        default="mysql",
-        dest="dbname",
-        help='DB para connectar ao MariaDB [default: %default]'
+        default="./config.cfg",
+        dest="config",
+        help='Local do arquivo com configuracoes [default: %default]'
     )
                 
     (options, args) = parser.parse_args()
+    conf = parse_config([options.config, ])
 
     mariaconn_config_dict = {
-        'user': options.dbuser,
-        'password': options.dbpass,
-        'host': options.dbhost,
-        'database': options.dbname,
+        'user': conf['user'],
+        'password': conf['pass'],
+        'host': conf['host'],
+        'database': conf['db'],
         'charset':  'utf8'
     }
+    
+    '''
+    Open DB Connection and return cursor
+    '''
+    (mdb_conn,db_cursor) = open_db_conn(**mariaconn_config_dict)
 
-    insert_data(options.nfefile,**mariaconn_config_dict)
+
+    for nfe_xml in get_xml_files(conf['xml_directory']):
+        try:
+            if os.path.isfile(nfe_xml):             
+                insert_data(nfe_xml,mdb_conn,db_cursor)
+            else:
+                raise Exception("Error: File Not Found {0}".format(nfe_xml))
+        except AssertionError as error:
+            print ("DB Unexpected error: {0}".format(error))
+            sys.exit(1)
 
     return 0
+
+    
+    if mdb_conn.is_connected():
+        db_cursor.close()
+        mdb_conn.close()
+        print("DB connecao fechada")
 
 
 if __name__ == '__main__':
