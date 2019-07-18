@@ -11,6 +11,7 @@ from configparser import ConfigParser
 from prettytable import PrettyTable
 import dateutil.parser
 import mysql.connector as mariadb
+from decimal import Decimal
 
 
 '''
@@ -87,51 +88,80 @@ def insert_data(nfefile,mdb_conn,db_cursor):
             print("Opening {0}".format(nfefile))
             doc = xmltodict.parse(fd.read())
     except IOError as e:
-        print ("I/O error({0}): {1}").format(e.errno, e.strerror)
+        print ("I/O error({0}): {1}".format(e.errno, e.strerror))
     except:
-        print ("I/O Unexpected error: {0}").format(sys.exc_info()[0])
+        print ("I/O Unexpected error: {0}".format(sys.exc_info()[0]))
     else:
         fd.close()
 
 
-    '''
-    Dados Gerais da NFe
-    '''
-    ide = doc['nfeProc']['NFe']['infNFe']['ide']
-    nfe_numero = int(ide.get('nNF','00000000'))
-    data = dateutil.parser.parse(ide.get('dhSaiEnt','2019-01-01T00:00:00-00:00'))
-    nfe_data = data.strftime('%Y-%m-%d %H:%M:%S')
+    try:
+        '''
+        Dados Gerais da NFe
+        '''
+        ide = doc['nfeProc']['NFe']['infNFe']['ide']
+        nfe_numero = int(ide.get('nNF','00000000'))
+        data = dateutil.parser.parse(ide.get('dhSaiEnt','2019-01-01T00:00:00-00:00'))
+        nfe_data = data.strftime('%Y-%m-%d %H:%M:%S')  
+        '''
+        Dados do Fornecedor
+        '''
+        emissor = doc['nfeProc']['NFe']['infNFe']['emit']
+        emissor_nome = str(emissor.get('xNome','Nada'))
+        emissor_cnpj = str(emissor.get('CNPJ','XXX'))
+        '''
+        Dados do Destinatario
+        '''
+        dest = doc['nfeProc']['NFe']['infNFe']['dest']
+        dest_nome = str(dest.get('xNome','XXX'))
+        dest_cnpj = str(dest.get('CNPJ','XXX'))
+        '''
+        Dados de Valor Total
+        '''
+        valor = doc['nfeProc']['NFe']['infNFe']['total']['ICMSTot']
+        valor_bruto = Decimal(valor.get('vBC','0'))
+        valor_nota = Decimal(valor.get('vNF','0'))
+
+    except KeyError as e:
+        print ("XML Parsing Error: Key not found {0}".format(e))
+        raise
+    except AttributeError as e:
+        print ("Attribute Error: {0}".format(e))
+        raise
+
+    try:
+        transp = doc['nfeProc']['NFe']['infNFe']['transp']
+        if not transp.get('vol'):
+            prod_volumes = 0
+            prod_embalagem = "Nada"
+        else:
+            vols = doc['nfeProc']['NFe']['infNFe']['transp']['vol']
+            prod_volumes = int(vols.get('qVol','0'))
+            prod_embalagem = str(vols.get('esp','Nenhuma').capitalize())
+    except KeyError as e:
+        print ("XML Parsing Error: Key not found {0}".format(e))
+        raise
+    except AttributeError as e:
+        print ("Attribute Error: {0}".format(e))
+        raise
+
+
 
     '''
-    Dados do Fornecedor
+    Check if NFe already exits in the database
     '''
-    emissor = doc['nfeProc']['NFe']['infNFe']['emit']
-    emissor_nome = str(emissor.get('xNome','Nada'))
-    emissor_cnpj = str(emissor.get('CNPJ','XXX'))
-
-    '''
-    Dados do Destinatario
-    '''
-    dest = doc['nfeProc']['NFe']['infNFe']['dest']
-    dest_nome = str(dest.get('xNome','XXX'))
-    dest_cnpj = str(dest.get('CNPJ','XXX'))
-
-    '''
-    Dados de Valor Total
-    '''
-    valor = doc['nfeProc']['NFe']['infNFe']['total']['ICMSTot']
-    valor_bruto = float(valor.get('vBC','0'))
-    valor_nota = float(valor.get('vNF','0'))
-
-    transp = doc['nfeProc']['NFe']['infNFe']['transp']
-
-    if not transp.get('vol'):
-        prod_volumes = 0
-        prod_embalagem = "Nada"
-    else:
-        vols = doc['nfeProc']['NFe']['infNFe']['transp']['vol']
-        prod_volumes = int(vols.get('qVol','0'))
-        prod_embalagem = str(vols.get('esp','Sem embalagem').capitalize())
+    sql_select = "SELECT nfe_numero FROM transitando_nfe WHERE nfe_numero = %s"
+    sql_select_tuple = (nfe_numero,)
+    insert_ok = False
+    try:
+        db_cursor.execute(sql_select,sql_select_tuple)
+        records = db_cursor.fetchall()
+        if (nfe_numero,) not in records:
+            insert_ok = True
+        else:
+            print("Skipping Insert")
+    except mariadb.Error as error:
+        print("Error executando SELECT: {0}".format(error))
 
 
     '''
@@ -142,16 +172,16 @@ def insert_data(nfefile,mdb_conn,db_cursor):
                                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"""
     transitando_nfe_tuple = (nfe_numero,nfe_data,emissor_nome,emissor_cnpj,
                              valor_bruto,valor_nota,prod_volumes,prod_embalagem)
-
-    try:
-        sql_result = db_cursor.execute(transitando_nfe_insert,transitando_nfe_tuple)
-        '''mdb_conn.commit()'''
-        print("NFe {0} valores inseridos na tabela transitando_nfe".format(nfe_numero))
-    except mariadb.Error as error:
-        mdb_conn.rollback()
-        print("NFe {0} Erro inserindo valores na tabela transitando_nfe: {1}".format(nfe_numero,error))
-        sys.exit(1)
-    
+    if insert_ok:
+        try:
+            sql_result = db_cursor.execute(transitando_nfe_insert,transitando_nfe_tuple)
+            '''mdb_conn.commit()'''
+            print("NFe {0} valores inseridos na tabela transitando_nfe".format(nfe_numero))
+        except mariadb.Error as error:
+            mdb_conn.rollback()
+            print("NFe {0} Erro inserindo valores na tabela transitando_nfe: {1}".format(nfe_numero,error))
+            sys.exit(1)
+        
 
     '''
     Inserindo os Items da NFe na tabela transitando_nfe_items
@@ -161,37 +191,37 @@ def insert_data(nfefile,mdb_conn,db_cursor):
                                        nfe_data,prod_codigo,prod_descri,prod_quant) 
                                        VALUES (%s,%s,%s,%s,%s)"""
 
-    
-    if not isinstance(doc['nfeProc']['NFe']['infNFe']['det'],list):
-        prod_codigo = str(doc['nfeProc']['NFe']['infNFe']['det']['prod']['cProd'])
-        prod_descri = doc['nfeProc']['NFe']['infNFe']['det']['prod']['xProd']
-        prod_quant  = float(doc['nfeProc']['NFe']['infNFe']['det']['prod']['qCom'])
+    if insert_ok:
+        if not isinstance(doc['nfeProc']['NFe']['infNFe']['det'],list):
+            prod_codigo = str(doc['nfeProc']['NFe']['infNFe']['det']['prod']['cProd'])
+            prod_descri = doc['nfeProc']['NFe']['infNFe']['det']['prod']['xProd']
+            prod_quant  = float(doc['nfeProc']['NFe']['infNFe']['det']['prod']['qCom'])
 
-        transitando_nfe_items_tuple = (nfe_numero,nfe_data,prod_codigo,prod_descri,prod_quant)
-        sql_result = db_cursor.execute(transitando_nfe_items_insert,transitando_nfe_items_tuple)
+            transitando_nfe_items_tuple = (nfe_numero,nfe_data,prod_codigo,prod_descri,prod_quant)
+            sql_result = db_cursor.execute(transitando_nfe_items_insert,transitando_nfe_items_tuple)
 
-    else:
-        infNFe = doc['nfeProc']['NFe']['infNFe']
-        num_itens = len(infNFe.get('det',''))
+        else:
+            infNFe = doc['nfeProc']['NFe']['infNFe']
+            num_itens = len(infNFe.get('det',''))
 
-        try:
-            start_i = 0
-            while start_i < num_itens:
+            try:
+                start_i = 0
+                while start_i < num_itens:
 
-                prod_codigo = str(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['cProd'])
-                prod_descri = doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['xProd']
-                prod_quant  = float(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['qCom'])
+                    prod_codigo = str(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['cProd'])
+                    prod_descri = doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['xProd']
+                    prod_quant  = float(doc['nfeProc']['NFe']['infNFe']['det'][start_i]['prod']['qCom'])
 
-                transitando_nfe_items_tuple = (nfe_numero,nfe_data,prod_codigo,prod_descri,prod_quant)
-                sql_result = db_cursor.execute(transitando_nfe_items_insert,transitando_nfe_items_tuple)
-                start_i += 1
-            
-            mdb_conn.commit()
-            print("NFe {0} valores inseridos na tabela transitando_nfe_items".format(nfe_numero))
-        except mariadb.Error as error:
-            mdb_conn.rollback()
-            print("NFe {0} Erro inserindo valores na tabela transitando_nfe: {1}".format(nfe_numero,error))
-            sys.exit(1)
+                    transitando_nfe_items_tuple = (nfe_numero,nfe_data,prod_codigo,prod_descri,prod_quant)
+                    sql_result = db_cursor.execute(transitando_nfe_items_insert,transitando_nfe_items_tuple)
+                    start_i += 1
+                
+                mdb_conn.commit()
+                print("NFe {0} valores inseridos na tabela transitando_nfe_items".format(nfe_numero))
+            except mariadb.Error as error:
+                mdb_conn.rollback()
+                print("NFe {0} Erro inserindo valores na tabela transitando_nfe: {1}".format(nfe_numero,error))
+                sys.exit(1)
 
 
 
@@ -222,9 +252,12 @@ def main():
     '''
     Open DB Connection and return cursor
     '''
+    start_time = time.time()
     (mdb_conn,db_cursor) = open_db_conn(**mariaconn_config_dict)
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 
+    start_time = time.time()
     for nfe_xml in get_xml_files(conf['xml_directory']):
         try:
             if os.path.isfile(nfe_xml):             
@@ -235,14 +268,14 @@ def main():
             print ("DB Unexpected error: {0}".format(error))
             sys.exit(1)
 
-    return 0
+    print("--- %s seconds ---" % (time.time() - start_time))
 
-    
     if mdb_conn.is_connected():
         db_cursor.close()
         mdb_conn.close()
         print("DB connecao fechada")
 
+    return 0
 
 if __name__ == '__main__':
     status = main()
