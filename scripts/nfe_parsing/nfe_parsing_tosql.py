@@ -36,6 +36,7 @@ def parse_config(configfile):
         """ Get Defaults """
         conf = dict(c.defaults())
         results['xml_directory'] = conf.get('xml_directory', './XML')
+        results['mes'] = conf.get('mes', '')
 
     if c.has_section('mysql'):
         conf = dict(c.items('mysql'))
@@ -50,10 +51,17 @@ def parse_config(configfile):
     return results
 
 
-def get_xml_files(xml_directory):
+def get_xml_files(xml_directory,month):
 
-    month_location = time.strftime("%m %B")
-    full_dir = xml_directory + '/' + month_location 
+    month_locdict={1:'01 JANEIRO', 2:'02 FEVEREIRO', 3:'03 MARÇO', 4:'04 ABRIL',
+                5:'05 MAIO', 6:'06 JUNHO', 7:'07 JULHO', 8:'08 AGOSTO', 9:'09 SETEMBRO',
+                10:'10 OUTUBRO', 11:'11 NOVEMBRO', 12:'12 DEZEMBRO'}
+
+    if month:
+        full_dir = xml_directory + '/' + month_locdict[int(month)]
+    else:
+        month_location = time.strftime("%m %B")
+        full_dir = xml_directory + '/' + month_location
     
     abs_path_files = []
     for file in os.listdir(full_dir):
@@ -77,12 +85,12 @@ def open_db_conn(**db_config_dict):
     return (mdb_conn,db_cursor)
 
 
-def insert_data(nfefile,mdb_conn,db_cursor):
-
+def insert_data(nfefile,month,mdb_conn,db_cursor):
     '''
     Function will open the XML File and 
     transform it into a dict object
     '''
+
     try: 
         with open(nfefile) as fd:
             print("Opening {0}".format(nfefile))
@@ -94,6 +102,14 @@ def insert_data(nfefile,mdb_conn,db_cursor):
     else:
         fd.close()
 
+    '''
+    Data do mes do ano (YYYY-MM-DD) no qual o arquivo XML
+    se encontrava na pasta do diretorio
+    '''
+    if month:
+        mes_analisado = time.strftime("%Y-{:02d}-01".format(int(month)))
+    else:
+        mes_analisado = time.strftime("%Y-%m-01")
 
     try:
         '''
@@ -167,10 +183,10 @@ def insert_data(nfefile,mdb_conn,db_cursor):
     '''
     Inserindo os dados Gerais da NFe na tabela transitando_nfe
     '''
-    transitando_nfe_insert = """INSERT INTO transitando_nfe (nfe_numero,nfe_data,emissor_nome,
-                                emissor_cnpj,valor_bruto,valor_nota,prod_volumes,prod_embalagem) 
-                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"""
-    transitando_nfe_tuple = (nfe_numero,nfe_data,emissor_nome,emissor_cnpj,
+    transitando_nfe_insert = """INSERT INTO transitando_nfe (nfe_numero,mes_analisado,
+                                nfe_data,emissor_nome,emissor_cnpj,valor_bruto,valor_nota,
+                                prod_volumes,prod_embalagem) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+    transitando_nfe_tuple = (nfe_numero,mes_analisado,nfe_data,emissor_nome,emissor_cnpj,
                              valor_bruto,valor_nota,prod_volumes,prod_embalagem)
     if insert_ok:
         try:
@@ -252,23 +268,23 @@ def main():
     '''
     Open DB Connection and return cursor
     '''
-    start_time = time.time()
+    #start_time = time.time()
     (mdb_conn,db_cursor) = open_db_conn(**mariaconn_config_dict)
-    print("--- %s seconds ---" % (time.time() - start_time))
+    #print("--- %s seconds ---" % (time.time() - start_time))
 
 
-    start_time = time.time()
-    for nfe_xml in get_xml_files(conf['xml_directory']):
+    #start_time = time.time()
+    for nfe_xml in get_xml_files(conf['xml_directory'],conf['mes']):
         try:
             if os.path.isfile(nfe_xml):             
-                insert_data(nfe_xml,mdb_conn,db_cursor)
+                insert_data(nfe_xml,conf['mes'],mdb_conn,db_cursor)
             else:
                 raise Exception("Error: File Not Found {0}".format(nfe_xml))
         except AssertionError as error:
             print ("DB Unexpected error: {0}".format(error))
             sys.exit(1)
 
-    print("--- %s seconds ---" % (time.time() - start_time))
+    #print("--- %s seconds ---" % (time.time() - start_time))
 
     if mdb_conn.is_connected():
         db_cursor.close()
