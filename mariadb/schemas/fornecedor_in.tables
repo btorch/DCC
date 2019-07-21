@@ -1,0 +1,20 @@
+CREATE TABLE transitando_nfe (
+    nfe_numero      INT PRIMARY KEY,
+    mes_analisado   DATE NOT NULL,
+    nfe_data        TIMESTAMP NOT NULL,
+    emissor_nome    VARCHAR(255) NOT NULL,
+    emissor_cnpj    VARCHAR(25) NOT NULL,
+    valor_bruto     DECIMAL(15,3) NOT NULL,
+    valor_nota      DECIMAL(15,3) NOT NULL,
+    prod_volumes    INT NOT NULL DEFAULT 0,
+    prod_embalagem  VARCHAR(15) DEFAULT "caixas"
+    ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;
+
+
+CREATE TABLE transitando_nfe_items (
+    nfe_numero      INT NOT NULL,
+    nfe_data        TIMESTAMP NOT NULL,
+    prod_codigo     VARCHAR(25) NOT NULL,
+    prod_descri     VARCHAR(255) NOT NULL,
+    prod_quant      FLOAT NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;
