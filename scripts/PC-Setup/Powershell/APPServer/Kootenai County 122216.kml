@@ -1,0 +1,1393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Kootenai County</name>
+	<open>1</open>
+	<Style id="sh_wht-blank">
+		<IconStyle>
+			<color>ffff0000</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<BalloonStyle>
+			<text><![CDATA[<h3>$[name]</h3>]]></text>
+		</BalloonStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+		<LineStyle>
+			<color>ffff0000</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<Style id="icon-seq2-0-0-097138-normal">
+		<IconStyle>
+			<color>ff00aa00</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0</scale>
+		</LabelStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+		<LineStyle>
+			<color>ff00aa00</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<StyleMap id="icon-seq2-0-0-097138">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#icon-seq2-0-0-097138-normal0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#icon-seq2-0-0-097138-highlight</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="icon-seq2-1-0-0288D1-nodesc-normal">
+		<IconStyle>
+			<color>ffff0000</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text><![CDATA[<h3>$[name]</h3>]]></text>
+		</BalloonStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+		<LineStyle>
+			<color>ffff0000</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<Style id="icon-seq2-0-0-097138-highlight">
+		<IconStyle>
+			<color>ff00aa00</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+		</LabelStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+		<LineStyle>
+			<color>ff00aa00</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<StyleMap id="icon-seq2-0-0-0971380">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#icon-seq2-0-0-097138-normal</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#icon-seq2-0-0-097138-highlight0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="icon-seq2-1-0-0288D1-nodesc">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc-normal</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc-highlight</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="icon-seq2-0-0-097138-highlight0">
+		<IconStyle>
+			<color>ff00aa00</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+		</LabelStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+		<LineStyle>
+			<color>ff00aa00</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<Style id="poly-000000-1-77-nodesc-normal">
+		<BalloonStyle>
+			<text><![CDATA[<h3>$[name]</h3>]]></text>
+		</BalloonStyle>
+		<LineStyle>
+			<color>ff000000</color>
+		</LineStyle>
+		<PolyStyle>
+			<color>4d000000</color>
+		</PolyStyle>
+	</Style>
+	<Style id="icon-seq2-0-0-097138-normal0">
+		<IconStyle>
+			<color>ff00aa00</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0</scale>
+		</LabelStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+		<LineStyle>
+			<color>ff00aa00</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<Style id="poly-000000-1-77-nodesc-highlight">
+		<BalloonStyle>
+			<text><![CDATA[<h3>$[name]</h3>]]></text>
+		</BalloonStyle>
+		<LineStyle>
+			<color>ff000000</color>
+			<width>2</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4d000000</color>
+		</PolyStyle>
+	</Style>
+	<Style id="sn_wht-blank">
+		<IconStyle>
+			<color>ffff0000</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text><![CDATA[<h3>$[name]</h3>]]></text>
+		</BalloonStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+		<LineStyle>
+			<color>ffff0000</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<StyleMap id="poly-000000-1-77-nodesc">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#poly-000000-1-77-nodesc-normal</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#poly-000000-1-77-nodesc-highlight</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="icon-seq2-1-0-0288D1-nodesc-normal0">
+		<IconStyle>
+			<color>ffff0000</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text><![CDATA[<h3>$[name]</h3>]]></text>
+		</BalloonStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+		<LineStyle>
+			<color>ffff0000</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<StyleMap id="icon-seq2-1-0-0288D1-nodesc0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc-normal0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc-highlight0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_wht-blank">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_wht-blank</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_wht-blank</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="icon-seq2-1-0-0288D1-nodesc-highlight">
+		<IconStyle>
+			<color>ffff0000</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+		</LabelStyle>
+		<BalloonStyle>
+			<text><![CDATA[<h3>$[name]</h3>]]></text>
+		</BalloonStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+		<LineStyle>
+			<color>ffff0000</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<Style id="icon-seq2-1-0-0288D1-nodesc-highlight0">
+		<IconStyle>
+			<color>ffff0000</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+		</LabelStyle>
+		<BalloonStyle>
+			<text><![CDATA[<h3>$[name]</h3>]]></text>
+		</BalloonStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/kml/paddle/wht-blank-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+		<LineStyle>
+			<color>ffff0000</color>
+			<width>4</width>
+		</LineStyle>
+	</Style>
+	<Folder>
+		<name>C Route</name>
+		<visibility>0</visibility>
+		<Placemark>
+			<name>W RIVERSTONE DR/N OLD MILL LOOP</name>
+			<visibility>0</visibility>
+			<description>C10</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.805879,47.693717,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>NORTHWEST BLVD/W DAVIDSON AVE</name>
+			<visibility>0</visibility>
+			<description>C11</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.801618,47.69183099999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>NORTHWEST BLVD/W HUBBARD AVE</name>
+			<visibility>0</visibility>
+			<description>C12</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.794029,47.682563,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>NORTHWEST BLVD/W GARDEN AVE</name>
+			<visibility>0</visibility>
+			<description>C13</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.789517,47.677701,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E LAKESIDE AVE/N 1ST ST</name>
+			<visibility>0</visibility>
+			<description>C14</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.785384,47.674342,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E LAKESIDE AVE/N 8TH ST</name>
+			<visibility>0</visibility>
+			<description>C15</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.775669,47.674124,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SHERMAN AVE/N 12TH ST</name>
+			<visibility>0</visibility>
+			<description>C16</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.768818,47.673408,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E LAKESIDE AVE/N 8TH ST</name>
+			<visibility>0</visibility>
+			<description>C17</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.775403,47.674176,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N 4TH ST/WALLACE</name>
+			<visibility>0</visibility>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.7809451,47.6768745,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N 4TH ST/E MILLER AVE</name>
+			<visibility>0</visibility>
+			<description>C19</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.780731,47.68265499999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N 4TH ST/E HARRISON AVE</name>
+			<visibility>0</visibility>
+			<description>C20</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.780574,47.686444,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N 4TH ST/E LOCUST AVE</name>
+			<visibility>0</visibility>
+			<description>C21</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.780637,47.693563,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N 4TH ST/E BEST AVE</name>
+			<visibility>0</visibility>
+			<description>C22</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.780701,47.70103099999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E ANTON AVE/N 2ND ST</name>
+			<visibility>0</visibility>
+			<description>C23</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.78377,47.703282,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/W SEALE AVE</name>
+			<visibility>0</visibility>
+			<description>C24</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.786314,47.709177,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/E KATHLEEN AVE</name>
+			<visibility>0</visibility>
+			<description>C25</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.786481,47.717197,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/E DALTON AVE</name>
+			<visibility>0</visibility>
+			<description>C26</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.786555,47.72203,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/HANLEY</name>
+			<visibility>0</visibility>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.7866313,47.729683,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/W AQUA AVE</name>
+			<visibility>0</visibility>
+			<description>C28</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.786642,47.742147,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/PRARIE</name>
+			<visibility>0</visibility>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.7865562,47.7443305,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/E NITA AVE</name>
+			<visibility>0</visibility>
+			<description>C30</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.786534,47.74762499999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W HONEYSUCKLE AVE/N COMMERCE DR</name>
+			<visibility>0</visibility>
+			<description>C31</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.789728,47.75187199999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W HONEYSUCKLE AVE/DAVIS ST</name>
+			<visibility>0</visibility>
+			<description>C32</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.793297,47.751842,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W HONEYSUCKLE AVE/N POINT PL</name>
+			<visibility>0</visibility>
+			<description>C33</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.800493,47.751807,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W HONEYSUCKLE AVE/N RAMSEY RD</name>
+			<visibility>0</visibility>
+			<description>C34</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.807911,47.751802,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N RAMSEY RD/LEISURE DR</name>
+			<visibility>0</visibility>
+			<description>C35</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.80842,47.749495,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N RAMSEY RD/W CARDINAL AVE</name>
+			<visibility>0</visibility>
+			<description>C36</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.808452,47.74665300000001,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W PRAIRIE AVE/N MYSTIC ST</name>
+			<visibility>0</visibility>
+			<description>C38</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.801091,47.744348,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N MINERAL DR/W AQUA AVE</name>
+			<visibility>0</visibility>
+			<description>C37</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.795488,47.742124,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W WILBUR AVE/MINERAL DR</name>
+			<visibility>0</visibility>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.79515,47.7372417,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N PINEGROVE DR/W HANLEY AVE</name>
+			<visibility>0</visibility>
+			<description>C40</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.802393,47.73011000000001,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N RAMSEY RD/W HANLEY AVE</name>
+			<visibility>0</visibility>
+			<description>C41</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.808491,47.72935399999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N RAMSEY ST/DALTON RD</name>
+			<visibility>0</visibility>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.8084002,47.7228954,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N RAMSEY RD/W STATE ST</name>
+			<visibility>0</visibility>
+			<description>C42</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.808366,47.71833199999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N RAMSEY RD/W GOLFCOURSE RD</name>
+			<visibility>0</visibility>
+			<description>C45</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.808131,47.705367,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N RAMSEY RD/W APPLEWAY AVE</name>
+			<visibility>0</visibility>
+			<description>C46</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.808125,47.703016,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/NORTHWEST BLVD</name>
+			<visibility>0</visibility>
+			<description>C47</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.807334,47.697897,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/NORTHWEST BLVD</name>
+			<visibility>0</visibility>
+			<description>C53</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.807819,47.698157,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W RIVERSTONE DR/N OLD MILL LOOP</name>
+			<visibility>0</visibility>
+			<description>C54</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.805748,47.693835,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N RAMSEY RD/W APPLEWAY AVE</name>
+			<visibility>0</visibility>
+			<description>C55</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.807771,47.702882,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N RAMSEY RD/W GOLFCOURSE RD</name>
+			<visibility>0</visibility>
+			<description>C56</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.807824,47.704708,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N RAMSEY RD/W KATHLEEN AVE</name>
+			<visibility>0</visibility>
+			<description>C57</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.807993,47.713924,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N RAMSEY RD/W HANLEY AVE</name>
+			<visibility>0</visibility>
+			<description>C58</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.808187,47.729482,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N PINEGROVE DR/W HANLEY AVE</name>
+			<visibility>0</visibility>
+			<description>C59</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.802199,47.730229,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W WILBUR AVE/N WHEATFIELD DR</name>
+			<visibility>0</visibility>
+			<description>C60</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.797525,47.737123,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N MINERAL DR/N AQUA AVE</name>
+			<visibility>0</visibility>
+			<description>C61</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.795289,47.741825,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N RAMSEY RD/W LEASURE DR</name>
+			<visibility>0</visibility>
+			<description>C62</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.808204,47.749505,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W HONEYSUCKLE AVE/N RAMSEY RD</name>
+			<visibility>0</visibility>
+			<description>C63</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.807563,47.75169,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W HONEYSUCKLE AVE/N POINT PL</name>
+			<visibility>0</visibility>
+			<description>C64</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.80091,47.7517,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W HONEYSUCKLE AVE/N DAVIS CIR</name>
+			<visibility>0</visibility>
+			<description>C65</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.79485,47.75170399999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W HONEYSUCKLE AVE/N COMMERCE DR</name>
+			<visibility>0</visibility>
+			<description>C66</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.789653,47.751682,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/W CENTA AVE</name>
+			<visibility>0</visibility>
+			<description>C67</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.786741,47.746958,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/W CENTA AVE</name>
+			<visibility>0</visibility>
+			<description>C68</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.786847,47.745442,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/W AQUA AVE</name>
+			<visibility>0</visibility>
+			<description>C69</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.786814,47.742256,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/W HANLEY AVE</name>
+			<visibility>0</visibility>
+			<description>C70</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.786841,47.730867,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/W DALTON AVE</name>
+			<visibility>0</visibility>
+			<description>C71</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.786892,47.72178499999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/W KATHLEEN AVE</name>
+			<visibility>0</visibility>
+			<description>C72</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.786766,47.716821,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N GOVERNMENT WAY/W NIEDER AVE</name>
+			<visibility>0</visibility>
+			<description>C73</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.786603,47.70848099999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E ANTON AVE/N 2ND ST</name>
+			<visibility>0</visibility>
+			<description>C74</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.783254,47.70314599999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N 4TH ST/E HAYCRAFT AVE</name>
+			<visibility>0</visibility>
+			<description>C75</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.781036,47.701719,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E LAKESIDE AVE/N 1ST ST</name>
+			<visibility>0</visibility>
+			<description>C76</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.785384,47.67442800000001,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>NORTHWEST BLVD/W GARDEN AVE</name>
+			<visibility>0</visibility>
+			<description>C77</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.788985,47.67753,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>NORTHWEST BLVD/W HUBBARD AVE</name>
+			<visibility>0</visibility>
+			<description>C78</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.793671,47.68266700000001,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>NORTHWEST BLVD/NORTHWEST BLVD</name>
+			<visibility>0</visibility>
+			<description>C79</description>
+			<styleUrl>#icon-seq2-0-0-0971380</styleUrl>
+			<Point>
+				<coordinates>-116.80118,47.691846,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Line 72</name>
+			<visibility>0</visibility>
+			<styleUrl>#icon-seq2-0-0-097138</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					-116.8062972,47.6936925,0 -116.8055838,47.6937268,0 -116.8050849,47.69354439999999,0 -116.8047201,47.69332060000001,0 -116.8042696,47.6933134,0 -116.8034971,47.6935734,0 -116.8033467,47.69359500000001,0 -116.8031645,47.6935228,0 -116.8015015,47.69179319999999,0 -116.7983472,47.68864080000001,0 -116.7968559,47.6871169,0 -116.7960835,47.68622129999999,0 -116.7956114,47.68558580000001,0 -116.7953807,47.68526799999999,0 -116.7951715,47.68466490000001,0 -116.794914,47.6838559,0 -116.7946726,47.6834623,0 -116.7938626,47.682516,0 -116.789517,47.677701,0 -116.7883533,47.6765458,0 -116.7876881,47.6757873,0 -116.7868459,47.6745159,0 -116.7867225,47.6744328,0 -116.7864758,47.6743172,0 -116.7858535,47.6743172,0 -116.785384,47.674342,0 -116.775669,47.674124,0 -116.7754626,47.67401739999999,0 -116.7754036,47.6734359,0 -116.7753553,47.67337449999999,0 -116.774894,47.67330940000001,0 -116.7695336,47.67330489999999,0 -116.7692976,47.6733284,0 -116.7691112,47.673416,0 -116.7691152,47.673742,0 -116.7690414,47.6737646,0 -116.7688282,47.6737564,0 -116.7687933,47.67369500000001,0 -116.7687973,47.6734079,0 -116.7688818,47.6733934,0 -116.7702363,47.6733844,0 -116.7749047,47.67339969999999,0 -116.7751944,47.6734575,0 -116.7753231,47.6736454,0 -116.7753124,47.67409690000001,0 -116.7754948,47.6742269,0 -116.7757952,47.67425939999999,0 -116.7808056,47.6743461,0 -116.7810416,47.67440389999999,0 -116.7810845,47.6747507,0 -116.7809129,47.67837709999999,0 -116.7808485,47.6815265,0 -116.7807627,47.68247989999999,0 -116.7805696,47.6862069,0 -116.7806768,47.6899119,0 -116.7806876,47.6920496,0 -116.7806554,47.6933856,0 -116.7807627,47.70080889999999,0 -116.7809021,47.70300750000001,0 -116.7810953,47.7032205,0 -116.7843139,47.70326380000001,0 -116.7861271,47.7033071,0 -116.786314,47.709177,0 -116.7867494,47.734893,0 -116.7867279,47.7390203,0 -116.786542,47.745726,0 -116.7865348,47.74798090000001,0 -116.7866045,47.7516346,0 -116.7866582,47.7517356,0 -116.7869908,47.751833,0 -116.7908639,47.75184740000001,0 -116.7936802,47.7517753,0 -116.8001175,47.7518186,0 -116.8081856,47.75184740000001,0 -116.8084753,47.7516959,0 -116.808486,47.7463649,0 -116.8084431,47.7446335,0 -116.8084002,47.74451799999999,0 -116.8079066,47.7444459,0 -116.7980576,47.74437379999999,0 -116.7955416,47.7443701,0 -116.7954397,47.7439553,0 -116.7955255,47.7419063,0 -116.7955363,47.7417404,0 -116.7955325810425,47.73945460452227,0 -116.7954715814442,47.73732461482595,0 -116.7956941381212,47.73727271514211,0 -116.7978644,47.7372381,0 -116.8023276,47.7372453,0 -116.802671,47.7371443,0 -116.8025637,47.73637949999999,0 -116.8019843,47.7358744,0 -116.8015337,47.7354126,0 -116.801405,47.7320355,0 -116.801641,47.7313139,0 -116.8021345,47.7310397,0 -116.8023491,47.7307221,0 -116.802393,47.73011000000001,0 -116.8080783,47.7300582,0 -116.8083787,47.7299861,0 -116.8085289,47.7297696,0 -116.8083787,47.7162152,0 -116.8082714,47.71407849999999,0 -116.8082285,47.7107145,0 -116.8080783,47.7047583,0 -116.8081427,47.7022963,0 -116.8081856,47.7015165,0 -116.8079495,47.7004045,0 -116.8077564,47.6997113,0 -116.806941,47.6982383,0 -116.8066138,47.6977004,0 -116.8066621,47.69757030000001,0 -116.8068123,47.6975306,0 -116.8070617,47.6975812,0 -116.8071449,47.697601,0 -116.8077993,47.6983971,0 -116.808207,47.6987112,0 -116.8087006,47.6989748,0 -116.8104011,47.69965,0 -116.8120373,47.70011569999999,0 -116.8139363,47.7004876,0 -116.8143439,47.7004912,0 -116.8145585,47.7003973,0 -116.8146229,47.69976910000001,0 -116.8145478,47.6984982,0 -116.8143761,47.69818049999999,0 -116.8140221,47.6979928,0 -116.8120909,47.6976823,0 -116.8113184,47.6974512,0 -116.8109322,47.69719119999999,0 -116.8105781,47.696628,0 -116.810267,47.6958481,0 -116.8096018,47.69484440000001,0 -116.8089473,47.6944327,0 -116.8074882,47.69378279999999,0 -116.8065333,47.6936673,0 -116.8060827,47.69378279999999,0 -116.8055248,47.69378279999999,0 -116.8051279,47.69361670000001,0 -116.8047953,47.69339280000001,0 -116.804291,47.6933784,0 -116.8035078,47.6936456,0 -116.8033254,47.69380449999999,0 -116.8035722,47.694245,0 -116.8063188,47.6977039,0 -116.807059,47.69872209999999,0 -116.8075955,47.7002023,0 -116.807692,47.70063559999999,0 -116.8078422,47.70223850000001,0 -116.8078208,47.705011,0 -116.8079925,47.7138258,0 -116.808187,47.729482,0 -116.8082499,47.72979839999999,0 -116.8078852,47.7299428,0 -116.8023276,47.72992830000001,0 -116.8020058,47.73002940000001,0 -116.8021345,47.7306067,0 -116.8021345,47.7310397,0 -116.8014908,47.7312273,0 -116.8013191,47.7316314,0 -116.8012977,47.7324107,0 -116.8012762,47.7352971,0 -116.8014479,47.7355713,0 -116.8023276,47.73636500000001,0 -116.8024349,47.7370289,0 -116.802156,47.7371876,0 -116.7954159207988,47.73713418832629,0 -116.7953340078905,47.73727802929214,0 -116.795353573519,47.73918549609481,0 -116.795289,47.741825,0 -116.7951822,47.74451799999999,0 -116.8081427,47.7446623,0 -116.8081856,47.75184740000001,0 -116.794281,47.7516455,0 -116.7916632,47.751732,0 -116.7870712,47.7516166,0 -116.7867815,47.751494,0 -116.7867386,47.7468915,0 -116.7868567,47.7420939,0 -116.786921,47.73066440000001,0 -116.7868567,47.7215998,0 -116.7867708,47.7161141,0 -116.7865777,47.7081444,0 -116.7864275,47.7033215,0 -116.7863417,47.70316270000001,0 -116.7814279,47.70309050000001,0 -116.781106,47.7029461,0 -116.7810202,47.70124210000001,0 -116.7809870312904,47.69628304288899,0 -116.7816041095086,47.69602373852489,0 -116.7822118558537,47.69549549494763,0 -116.7822303010068,47.6911627033871,0 -116.7823353049602,47.6826925835873,0 -116.782627985742,47.67474744903929,0 -116.7826411761235,47.67438037300181,0 -116.786481,47.6744291,0 -116.7867225,47.6746115,0 -116.7886591,47.67727899999999,0 -116.7933367,47.6824871,0 -116.7944526,47.6839968,0 -116.7947421,47.68542680000001,0 -116.8008685,47.6916813,0 -116.8057608,47.6972706,0 -116.8059942,47.6974277,0 -116.8063254,47.69749540000001,0 -116.8067907,47.6974548,0 -116.8070804,47.6975288,0 -116.8072735,47.6976417,0 -116.8078367,47.69837320000001,0 -116.8082525,47.6986921,0 -116.8087715,47.69894900000001,0 -116.8094515,47.6992203,0 -116.8104547,47.6996175,0 -116.8120533,47.70007240000001,0 -116.8139631,47.700437,0 -116.8142956,47.7004189,0 -116.8145049,47.700354,0 -116.8145639,47.699585,0 -116.814521,47.69885570000001,0 -116.8144405,47.6983827,0 -116.8143332,47.6981986,0 -116.8140006,47.69802889999999,0 -116.8120962,47.6977184,0 -116.8113881,47.6974945,0 -116.8108141,47.6970938,0 -116.8105567,47.69668939999999,0 -116.810165,47.69580119999999,0 -116.8095803,47.6948805,0 -116.8089205,47.6944544,0 -116.8075097,47.69383340000001,0 -116.8063939,47.6936673,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+	</Folder>
+	<Folder>
+		<name>B Route</name>
+		<Placemark>
+			<name>W SELTICE WAY/RIVERSTONE DR</name>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.8151986558292,47.70002110404789,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/N ATLAS RD WB</name>
+			<description>B10</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.828282,47.700873,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/GRAND MILL WB</name>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.8389022,47.7027042,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/N HUETTER RD WB</name>
+			<description>B12</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.849226,47.70500400000001,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SELTICE WAY/E COMMERCE LOOP WB</name>
+			<description>B13</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.864334,47.70545899999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SELCICE WAY/N CEDAR ST WB</name>
+			<description>B14</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.881601,47.70638,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N HERBORN PL/E 3RD AVE</name>
+			<open>1</open>
+			<description>B31</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.897262,47.708707,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SELTICE WAY/N GREENSFERRY RD</name>
+			<open>1</open>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.9154862099669,47.71068582621724,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SELTICE WAY/BAY ST WB</name>
+			<open>1</open>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.9252187734926,47.71109548092061,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N IDAHO ST/E 12TH AVE</name>
+			<description>B18</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.937089,47.719365,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N IDAHO ST/E 16TH AVE</name>
+			<description>B19</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.937091,47.72222799999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N IDAHO ST/E 20TH AVE</name>
+			<description>B20</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.937228,47.727726,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E POLELINE AVE/N IDAHO ST</name>
+			<description>B21</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.938279,47.73060400000001,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E POLELINE AVE/N SPOKANE ST</name>
+			<description>B22</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.94654,47.730597,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N SPOKANE/W 20TH AVE</name>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.9481379,47.7275396,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N SPOKANE ST/E 15TH AVE</name>
+			<description>B23</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.948197,47.723092,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N SPOKAME/MULLAN AVE</name>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.9482559,47.71621879999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SELTICE WAY/WILLIAM ST</name>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.9451419,47.715035,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SELTICE WAY/BAY ST EB</name>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.9253337,47.7108733,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SELTICE WAY/N GREENSFERRY RD</name>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.9159567,47.71043290000001,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N HERBORN PL/E 3RD AVE</name>
+			<description>B31</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.897262,47.708707,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SELTICE WAY/N CEDAR ST EB</name>
+			<description>B32</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.882335,47.706335,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SELTICE WAY/E COMMERCE LOOP EB</name>
+			<description>B33</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.864341,47.704926,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/N HUETTER RD EB</name>
+			<description>B34</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.850085,47.70488,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/N GRANMILL LN EB</name>
+			<description>B35</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.83845,47.702057,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/N ATLAS RD EB</name>
+			<description>B36</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.827689,47.700503,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/RIVERSTONE DR</name>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.8151984460705,47.70002329669332,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/N ATLAS RD WB</name>
+			<open>1</open>
+			<description>B10</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.828282,47.700873,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/GRAND MILL WB</name>
+			<open>1</open>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.8389022,47.7027042,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/N HUETTER RD WB</name>
+			<open>1</open>
+			<description>B12</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.849226,47.70500400000001,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SELTICE WAY/E COMMERCE LOOP WB</name>
+			<open>1</open>
+			<description>B13</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.864334,47.70545899999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SELTICE WAY/N CEDAR ST WB</name>
+			<open>1</open>
+			<description>B14</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.881601,47.70638,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N HERBORN PL/E 3RD AVE</name>
+			<open>1</open>
+			<description>B31</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.897262,47.708707,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N IDAHHO ST/MULLAN AVE</name>
+			<open>1</open>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.9371030457293,47.71623654300257,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N IDAHO ST/E 12TH AVE</name>
+			<open>1</open>
+			<description>B18</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.937089,47.719365,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N IDAHO ST/E 16TH AVE</name>
+			<open>1</open>
+			<description>B19</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.937091,47.72222799999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N IDAHO ST/E 20TH AVE</name>
+			<open>1</open>
+			<description>B20</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.937228,47.727726,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E POLELINE AVE/N IDAHO ST</name>
+			<open>1</open>
+			<description>B21</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.938279,47.73060400000001,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E POLELINE AVE/N SPOKANE ST</name>
+			<open>1</open>
+			<description>B22</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.94654,47.730597,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N SPOKANE/W 20TH AVE</name>
+			<open>1</open>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.9481379,47.7275396,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N SPOKANE ST/E 15TH AVE</name>
+			<open>1</open>
+			<description>B23</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.948197,47.723092,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N SPOKAME/MULLAN AVE</name>
+			<open>1</open>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.9482559,47.71621879999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SELTICE WAY/WILLIAM ST</name>
+			<open>1</open>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.9451419,47.715035,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N SYRINGA/E MULLAN AVE EB</name>
+			<open>1</open>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.9267918774733,47.71587415195447,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N ALBERTA ST/E MULLAN AVE EB</name>
+			<open>1</open>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.9220133551978,47.71585748717482,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>MULLAN AVE/N GREENSFERRY RD EB</name>
+			<open>1</open>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.9163455264463,47.71584094468862,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>N CECIL/JENALEN</name>
+			<open>1</open>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc0</styleUrl>
+			<Point>
+				<coordinates>-116.9050241,47.71397739999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>E SELTICE WAY/N CEDAR ST EB</name>
+			<open>1</open>
+			<description>B32</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.882335,47.706335,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/N HUETTER RD EB</name>
+			<open>1</open>
+			<description>B34</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.850085,47.70488,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/N GRANMILL LN EB</name>
+			<open>1</open>
+			<description>B35</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.83845,47.702057,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/N ATLAS RD EB</name>
+			<open>1</open>
+			<description>B36</description>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.827689,47.700503,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>W SELTICE WAY/RIVERSTONE DR</name>
+			<open>1</open>
+			<styleUrl>#icon-seq2-1-0-0288D1-nodesc</styleUrl>
+			<Point>
+				<coordinates>-116.8151984460705,47.70002329669332,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Line 34</name>
+			<styleUrl>#msn_wht-blank</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					-116.8150494156089,47.69925524862539,0 -116.8144720424934,47.69931875379503,0 -116.8144418990237,47.6995350450072,0 -116.81458,47.70056339999999,0 -116.8178404077969,47.70056672606434,0 -116.819640726961,47.7007401828664,0 -116.8208625595602,47.70082650723263,0 -116.8313491,47.7008667,0 -116.8325416809203,47.70093596820124,0 -116.8340205,47.7012999,0 -116.8368260291874,47.70205151154072,0 -116.8389003700735,47.70263162092114,0 -116.8419971457153,47.70355193114669,0 -116.8429329692654,47.70377463402799,0 -116.8481612,47.70485229999999,0 -116.8497062,47.70508330000001,0 -116.8520022,47.7052421,0 -116.8668723,47.7055309,0 -116.871872,47.7056031,0 -116.8765068,47.7057042,0 -116.877687,47.7057908,0 -116.8798113,47.7060652,0 -116.8827998242847,47.70656731686303,0 -116.89070036367,47.70835241387608,0 -116.8955745742708,47.70953703587323,0 -116.897101218657,47.70992050850261,0 -116.8975048925697,47.70989294468549,0 -116.897667132677,47.70986273467347,0 -116.897719798035,47.70953427211596,0 -116.8975472189914,47.7091880390207,0 -116.8972671,47.7086137,0 -116.8972027,47.7085307,0 -116.8971786,47.7082546,0 -116.8969321,47.7081583,0 -116.8961654,47.70814130000001,0 -116.8953144,47.7081174,0 -116.8951857,47.70817689999999,0 -116.8953185,47.7085234,0 -116.8953933244308,47.70911207951371,0 -116.8953111895133,47.70942021503548,0 -116.8968181270064,47.70996700398867,0 -116.8986292697713,47.71042327397942,0 -116.9002043765911,47.71082329482093,0 -116.9018159217976,47.71105302699924,0 -116.9035298133658,47.71115038978496,0 -116.9058062206933,47.71112289403179,0 -116.9153839606774,47.71067126846888,0 -116.9200589416973,47.71054883378198,0 -116.9261257332646,47.71117033915274,0 -116.9278307010061,47.71121942921581,0 -116.9287743131318,47.71150937749766,0 -116.9318064703964,47.71349593481995,0 -116.93285515161,47.71368203087386,0 -116.9355929698729,47.71371286326721,0 -116.9370654560605,47.7138620902121,0 -116.9370811298816,47.71422055341377,0 -116.9371242823372,47.71658356331097,0 -116.9372604267706,47.73013661517681,0 -116.9371533712943,47.73045903088639,0 -116.9371558029399,47.73059336787572,0 -116.9375070414604,47.73070881842212,0 -116.9376259546248,47.73062336766003,0 -116.9389835313889,47.73060714716166,0 -116.9476524927022,47.73064257022563,0 -116.9478889675628,47.7307466051074,0 -116.9482008784974,47.73067655345013,0 -116.9483093347099,47.73051870957838,0 -116.9481201848989,47.73028273768789,0 -116.9482483425619,47.7151498365746,0 -116.9432148997855,47.71498154355772,0 -116.9375877851573,47.71378319762635,0 -116.9371863379615,47.71374258699218,0 -116.9371244240645,47.71591567161657,0 -116.9052454984504,47.71581701216725,0 -116.9052631092725,47.71353711176216,0 -116.9053634210688,47.71338924272286,0 -116.9053303288707,47.71322278722541,0 -116.9050789439406,47.71309315620007,0 -116.9048357256607,47.71315395803936,0 -116.9046448456819,47.71340630846843,0 -116.9048554247108,47.71353295788905,0 -116.9047801093572,47.71582532902022,0 -116.9037853446711,47.71581932554351,0 -116.9000161308249,47.71582406240535,0 -116.896704518536,47.71584634149211,0 -116.8944935680642,47.71582077722132,0 -116.8944259678697,47.71524096028497,0 -116.8945272239802,47.71390358770206,0 -116.8954055154086,47.70971967866645,0 -116.8955936337418,47.70964630725375,0 -116.8968423557321,47.70990895588244,0 -116.8972784219807,47.71000560213204,0 -116.8977987367668,47.70989604481486,0 -116.8978257431317,47.709513810671,0 -116.8973588630182,47.7086163026361,0 -116.8972405632994,47.70811523125907,0 -116.8950422101244,47.70802983075404,0 -116.8952087517436,47.70839880547893,0 -116.895322798776,47.70892372056494,0 -116.8953198,47.7092048,0 -116.8952071,47.7092883,0 -116.8950193,47.7092852,0 -116.8882749957778,47.70762396012977,0 -116.8820499427054,47.7062268748374,0 -116.8804042277363,47.70590863232225,0 -116.8774831,47.705502,0 -116.8700159,47.7049461,0 -116.867559,47.7048956,0 -116.8531609,47.70504,0 -116.8511008,47.70501110000001,0 -116.8493617810518,47.70466750456815,0 -116.8432697408479,47.70354694069105,0 -116.8420417392036,47.70333472608127,0 -116.8397711376431,47.70248407663806,0 -116.8385990697679,47.7020491272008,0 -116.834521966955,47.70094733097647,0 -116.8322611,47.7005779,0 -116.8305445,47.7005057,0 -116.827712,47.7005201,0 -116.8267787,47.7005382,0 -116.8206954,47.700549,0 -116.8146801561092,47.7004002852988,0 -116.8146009930514,47.69983422633759,0 -116.8146105181994,47.69939672857051,0 -116.8150684344166,47.69933006567004,0 -116.8150929217839,47.699406250198,0 -116.8147506712917,47.6994721854341,0 -116.814781887494,47.70028042955418,0 -116.8153043533339,47.70029800180878,0 -116.8153918021127,47.69954851472233,0 -116.8152124414446,47.69942538293718,0 -116.8152079082474,47.69935280824794,0 -116.8151603249479,47.6992593139295,0 -116.8149049145557,47.69920936121809,0 -116.81443190181,47.699251948728,0 -116.8144217667336,47.70059433324561,0 -116.8179558248176,47.70065540290623,0 -116.8198128993759,47.70082722428285,0 -116.82094197347,47.70087023900626,0 -116.8283436139508,47.70092347835813,0 -116.831474131383,47.70093650880073,0 -116.8325267460665,47.70100081008935,0 -116.8388235173341,47.70270388774377,0 -116.8419763397672,47.70361031447586,0 -116.8429798531772,47.70385162102521,0 -116.8498068138653,47.70516116009232,0 -116.8521426331399,47.70535693295685,0 -116.8646387826821,47.70551057408699,0 -116.8765929032794,47.70577620835839,0 -116.8798206798625,47.70612673197638,0 -116.8870114541104,47.70755441279786,0 -116.894855507389,47.70947810971567,0 -116.8956098167611,47.70960812497082,0 -116.8972338816229,47.70997828538197,0 -116.8975483842803,47.70994152038151,0 -116.8977574388067,47.70987199047115,0 -116.8977680118591,47.70951482830927,0 -116.8972995180233,47.70860107765963,0 -116.8972188308817,47.70826934332114,0 -116.8969999207922,47.70813696784531,0 -116.8952525926768,47.70806592131557,0 -116.8951621321235,47.70808129653063,0 -116.8952899524333,47.70915924357664,0 -116.8950164729277,47.71075065761865,0 -116.8942936480152,47.71387176833888,0 -116.8942059463972,47.71588436982681,0 -116.894642310418,47.71597773299363,0 -116.8982701806622,47.7159941907075,0 -116.9039132283744,47.71604038390044,0 -116.9050412360739,47.71595427170221,0 -116.9051255555038,47.71392648918883,0 -116.9051351898676,47.71344569396349,0 -116.9052333689826,47.71332860743474,0 -116.9050959695332,47.71322211394669,0 -116.90498261784,47.71321388016734,0 -116.9048613360254,47.71333421829679,0 -116.90497332722,47.71347555686274,0 -116.9049440231573,47.71583978782332,0 -116.9053177621212,47.71598847192345,0 -116.9370700119535,47.71612527729579,0 -116.9371690964742,47.71630775652314,0 -116.9371466997331,47.72115872777779,0 -116.9371671759052,47.72278543961261,0 -116.9373163137239,47.73028945533208,0 -116.9372132907672,47.73046051577598,0 -116.9372216717272,47.73058713009939,0 -116.9374693108042,47.7306687462656,0 -116.9375911874939,47.73058548836497,0 -116.9386426654239,47.73057215853738,0 -116.9477382601581,47.73059642836277,0 -116.9479202610683,47.73068440001782,0 -116.9481872852858,47.73059609654411,0 -116.9481943872927,47.73049450781139,0 -116.9480505777321,47.73032731567841,0 -116.9481788650347,47.71528103395742,0 -116.9479830841008,47.71508258835637,0 -116.9451546865341,47.71502664293779,0 -116.9433031152156,47.71487171989379,0 -116.9374413242311,47.71365067410007,0 -116.9365213724657,47.71354876309061,0 -116.932874798632,47.71352268302064,0 -116.9315096749502,47.7131076574144,0 -116.9289305654659,47.71135734623012,0 -116.9281492017751,47.71109053141046,0 -116.9266157940668,47.71102417785977,0 -116.9246108016325,47.71084177025069,0 -116.9204495457455,47.71040256308171,0 -116.9155310692308,47.71046414530292,0 -116.9035427261639,47.71094677398988,0 -116.900587919851,47.71073962895357,0 -116.8982896198821,47.7101764243313,0 -116.888246169973,47.70766487334836,0 -116.8819921694785,47.70626155165514,0 -116.8803579771919,47.70592618932556,0 -116.8774895626794,47.70554870660416,0 -116.8700236055125,47.70498157397184,0 -116.8675370670505,47.70493881467683,0 -116.8640652525473,47.70496008975279,0 -116.8531983192428,47.70507297416838,0 -116.8511074143618,47.70506550611647,0 -116.8432909860471,47.7036244888272,0 -116.8419765828197,47.7033675015203,0 -116.8385095475653,47.70207260082003,0 -116.8343874145285,47.70097387929098,0 -116.8324491032231,47.70065617338914,0 -116.8305395278668,47.7005479216509,0 -116.8275781697479,47.70056730799401,0 -116.8266929062198,47.70058773537314,0 -116.8206764804078,47.70058556696388,0 -116.8172197115825,47.70048461852635,0 -116.8147467199358,47.70035372533313,0 -116.8146603585986,47.69942718843035,0 -116.8149557597519,47.69938037518246,0 -116.814925277414,47.69941600000107,0 -116.8147088044264,47.69945908313554,0 -116.8147626090414,47.7003233003115,0 -116.8153570376648,47.70033809231258,0 -116.8154615510143,47.69954370724332,0 -116.8152857627579,47.69940326490287,0 -116.8151195182931,47.69929550720687,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+	</Folder>
+	<Folder>
+		<name>UNNUMBERING ZONES</name>
+		<Placemark>
+			<name>nis</name>
+			<styleUrl>#poly-000000-1-77-nodesc</styleUrl>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<tessellate>1</tessellate>
+						<coordinates>
+							-116.794281,47.6963031,0 -116.794796,47.6984405,0 -116.7987442,47.6983827,0 -116.7981648,47.69627420000001,0 -116.794281,47.6963031,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark>
+			<name>nis 2</name>
+			<styleUrl>#poly-000000-1-77-nodesc</styleUrl>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<tessellate>1</tessellate>
+						<coordinates>
+							-117.3038954,47.6673382,0 -117.3036432,47.6667096,0 -117.2989547,47.6677175,0 -117.2990084,47.669419,0 -117.3038954,47.6673382,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark>
+			<name>nis 3</name>
+			<styleUrl>#poly-000000-1-77-nodesc</styleUrl>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<tessellate>1</tessellate>
+						<coordinates>
+							-116.8851864,47.3382774,0 -116.8913126,47.3382701,0 -116.8915486,47.3329042,0 -116.8840599,47.3328314,0 -116.8851864,47.3382774,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark>
+			<name>nis 4</name>
+			<styleUrl>#poly-000000-1-77-nodesc</styleUrl>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<tessellate>1</tessellate>
+						<coordinates>
+							-116.8673444,47.70599289999999,0 -116.8655849,47.705964,0 -116.8675697,47.7079206,0 -116.8748546,47.70810109999999,0 -116.8753159,47.70615170000001,0 -116.8673444,47.70599289999999,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+	</Folder>
+</Document>
+</kml>

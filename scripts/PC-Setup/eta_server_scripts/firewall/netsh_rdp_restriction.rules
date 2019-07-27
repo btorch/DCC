@@ -1,0 +1,48 @@
+#
+# Collection of netsh rules
+#
+# netsh advfirewall show currentprofile
+# netsh advfirewall firewall show rule name=all
+# netsh advfirewall firewall show rule name='Remote Desktop (TCP-In)'
+# netsh advfirewall firewall delete rule name="RDP PublicNet"
+#
+##############
+# LocalNet
+##############
+netsh advfirewall firewall delete rule name="RDP LocalNet"
+netsh advfirewall firewall add rule name="RDP LocalNet" dir=in profile=Any action=allow remoteip=10.30.120.0/24 localport=3389 protocol=tcp description="RDP Access over LocalNet"
+netsh advfirewall firewall show rule name="RDP LocalNet"
+#
+##############
+# PublicNet
+##############
+netsh advfirewall firewall delete rule name="RDP PublicNet (KS-VPN)"
+netsh advfirewall firewall add rule name="RDP PublicNet (KS-VPN)" dir=in profile=Any action=allow remoteip=67.205.159.170 localport=3389 protocol=tcp description="Marcelo KS VPN"
+netsh advfirewall firewall show rule name="RDP PublicNet (KS-VPN)"
+Start-Sleep 4
+netsh advfirewall firewall delete rule name="RDP PublicNet (ETA-FL)"
+netsh advfirewall firewall add rule name="RDP PublicNet (ETA-FL)" dir=in profile=Any action=allow remoteip=207.239.226.42 localport=3389 protocol=tcp description="FL ETA Office"
+netsh advfirewall firewall show rule name="RDP PublicNet (ETA-FL)"
+Start-Sleep 4
+netsh advfirewall firewall delete rule name="RDP PublicNet (RON)"
+netsh advfirewall firewall add rule name="RDP PublicNet (RON)" dir=in profile=Any action=allow remoteip=70.253.70.167 localport=3389 protocol=tcp description="Ron IP"
+netsh advfirewall firewall show rule name="RDP PublicNet (RON)"
+Start-Sleep 4
+netsh advfirewall firewall delete rule name="RDP PublicNet (SG)"
+netsh advfirewall firewall add rule name="RDP PublicNet (SG)" dir=in profile=Any action=allow remoteip=50.150.155.169 localport=3389 protocol=tcp description="Stephen IP"
+netsh advfirewall firewall show rule name="RDP PublicNet (SG)"
+Start-Sleep 4
+#
+# Disable Windows Default 'Remote Desktop (TCP-In)' rule (Win 2008)
+netsh advfirewall firewall set rule name='Remote Desktop (TCP-In)' new enable=no
+netsh advfirewall firewall show rule name='Remote Desktop (TCP-In)'
+# Disable Windows Default 'Remote Desktop (TCP-In)' rule (Win 2012)
+netsh advfirewall firewall set rule name='Remote Desktop' new enable=no
+netsh advfirewall firewall show rule name='Remote Desktop'
+Start-Sleep 1
+netsh advfirewall firewall set rule name='Remote Desktop - User Mode (TCP-In)' new enable=no
+netsh advfirewall firewall show rule name='Remote Desktop - User Mode (TCP-In)'
+Start-Sleep 1
+netsh advfirewall firewall set rule name='Remote Desktop - User Mode (UDP-In)' new enable=no
+netsh advfirewall firewall show rule name='Remote Desktop - User Mode (UDP-In)'
+
