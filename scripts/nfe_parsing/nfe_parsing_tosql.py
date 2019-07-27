@@ -17,7 +17,7 @@ from decimal import Decimal
 '''
 Setting up some environmental variables
 '''
-os.environ['LC_ALL'] = 'C'
+#os.environ['LC_ALL'] = 'C'
 #os.environ['LANG'] = 'en_US.UTF-8'
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
@@ -77,7 +77,7 @@ def open_db_conn(**db_config_dict):
         if mdb_conn.is_connected():
             db_info = mdb_conn.get_server_info()
             print("Conectado ao servidor Maria DB.\nMaria DB {0}".format(db_info))
-            db_cursor = mdb_conn.cursor(prepared=True)
+            db_cursor = mdb_conn.cursor()
     except mariadb.Error as error:
         print("Error: {}".format(error))
         sys.exit(1)
@@ -262,7 +262,8 @@ def main():
         'password': conf['pass'],
         'host': conf['host'],
         'database': conf['db'],
-        'charset':  'utf8'
+        'charset':  'utf8mb4',
+        'collation':'utf8mb4_unicode_ci'
     }
     
     '''
