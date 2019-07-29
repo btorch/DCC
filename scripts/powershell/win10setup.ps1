@@ -4,7 +4,44 @@
 #      Configure o paramentro abaixo no powershell antes
 #      de rodar o script
 #      WINPC_NOME="XXXX"
+
+
+
+$Logfile = ".\pc-setup.log"
+
+Function LogWrite
+{
+    Param ([string]$logstring)
+    Add-Content $Logfile -value $logstring
+}
+
+
+#----------------------------------------------------------
+# Chocolatey Instalacao
+# Chocolatey Instalacao de Pacotes 
+# Choco Info https://chocolatey.org/packages
+#----------------------------------------------------------
+Write-Host "`n"
+Write-Host "$(Get-Date -format 'u') - Salvando 'Execution Policy' Original"
+$curr_policy = $(Get-ExecutionPolicy)
+Write-Host "$(Get-Date -format 'u') - Mudando 'Execution Policy' para Bypass"
+Set-ExecutionPolicy Bypass
+Start-Sleep 1
+
+Write-Host "$(Get-Date -format 'u') - Instalando Choco para Windows"
+iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+$env:Path += ";C:\ProgramData\chocolatey\bin"
+Start-Sleep 5
+
+
+
+#----------------------------------------------------------
+# Agora Instalando Carbon Modulo
+#----------------------------------------------------------
 #
+Write-Host "$(Get-Date -format 'u') - Instalando Carbon Modulo"
+choco install carbon -y 
+Start-Sleep 5 
 Import-Module 'Carbon'
 
 
@@ -39,24 +76,11 @@ Carbon_IniFile UserPass
 
 
 
+
 #----------------------------------------------------------
-# Chocolatey Instalacao
 # Chocolatey Instalacao de Pacotes 
 # Choco Info https://chocolatey.org/packages
 #----------------------------------------------------------
-Write-Host "`n"
-Write-Host "$(Get-Date -format 'u') - Salvando 'Execution Policy' Original"
-$curr_policy = $(Get-ExecutionPolicy)
-Write-Host "$(Get-Date -format 'u') - Mudando 'Execution Policy' para RemoteSigned"
-Set-ExecutionPolicy RemoteSigned
-Start-Sleep 1
-
-Write-Host "$(Get-Date -format 'u') - Instalando Choco para Windows"
-iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-$env:Path += ";C:\ProgramData\chocolatey\bin"
-Start-Sleep 5
-
-# Install vim using choco
 # Write-Host "$(Get-Date -format 'u') - Instalando Vim-Tux Suite"
 # choco install vim-tux -y
 
@@ -90,8 +114,8 @@ choco install teamviewer -y
 Write-Host "$(Get-Date -format 'u') - Instalando Office 365 Business"
 choco install office365business -y
 
-Write-Host "$(Get-Date -format 'u') - Mudando 'Execution Policy' para valor original: $curr_policy"
-Set-ExecutionPolicy $curr_policy
+Write-Host "$(Get-Date -format 'u') - Instalando Slack"
+choco install slack -y
 
 
 
@@ -114,6 +138,15 @@ Start-Sleep 1
 # Install-User -Credential $eccreds -Description "$UserName Local User" -FullName "$UserName" -Verbose
 # Add-GroupMember -Name "Users" -Member "$UserName" -Verbose
 # Start-Sleep 1
+
+
+
+#----------------------------------------------------------
+# Agendamento de Tarefas
+#----------------------------------------------------------
+# $spotcreds = New-Credential -User "spot" -Password "sp0tAdm1n"
+# Write-Host "$(Get-Date -format 'u') - Configurando Agendamento de Tarefas"
+# Install-ScheduledTask -Name "APC2 Update" -TaskXmlFilePath "C:\ETA\SQLCMD\APC2 Update.xml" -TaskCredential $dicocel_creds
 
 
 
@@ -155,4 +188,11 @@ Set-HostsEntry -IPAddress 192.168.1.201 -HostName 'websrv01.dicocel.com.br'
 # Rename-Computer -NewName "$HostName" -LocalCredential $dicocel_creds -Verbose -Restart
 #
 
+
+
+#----------------------------------------------------------
+# Restaurando 'Execution Policy'
+#----------------------------------------------------------
+Write-Host "$(Get-Date -format 'u') - Mudando 'Execution Policy' para valor original: $curr_policy"
+Set-ExecutionPolicy $curr_policy
 
