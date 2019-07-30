@@ -1,19 +1,25 @@
 # Setup Sistema Configuration (Powershell v3+)
 #
 # Info:
-#      Configure o paramentro abaixo no powershell antes
-#      de rodar o script
-#      WINPC_NOME="XXXX"
+#       Antes de rodar verifique a Execution-Policy do Powershell
+#       Tera que ser mudada para poder rodar o script
+#
+# Para Fazer:
+#   - Ler arquivo INI 
+#
 
 
 
+#----------------------------------------------------------
+# Metodos
+#----------------------------------------------------------
 $Logfile = ".\pc-setup.log"
-
 Function LogWrite
 {
     Param ([string]$logstring)
     Add-Content $Logfile -value $logstring
 }
+
 
 
 #----------------------------------------------------------
@@ -50,30 +56,13 @@ Import-Module 'Carbon'
 # Coletando dados do arquivo INI
 # para configuracao
 #----------------------------------------------------------
-Carbon_IniFile HostName
-{
-  Path = 'C:\pc-setup.ini'
-  Section = 'GERAL';
-  Name = 'pc_nome';
-  Ensure = 'Absent';
+if ( Test-Path .\win10setup.ini -PathType Leaf) {
+  Split-Ini -Path .\win10setup.ini -AsHashtable -CaseSensitive -OutVariable myini
+  $d = $myini.Item("")
+  $HostName = $d.'GERAL.pc_nome'.Value
+  $UserName = $d.'USUARIO.usuario_nome'.Value
+  $UserPass = $d.'USUARIO.usuario_senha'.Value
 }
-
-Carbon_IniFile UserName
-{
-  Path = 'C:\pc-setup.ini'
-  Section = 'USUARIO';
-  Name = 'usuario_nome';
-  Ensure = 'Absent';
-}
-
-Carbon_IniFile UserPass
-{
-  Path = 'C:\pc-setup.ini'
-  Section = 'USUARIO';
-  Name = 'usuario_senha';
-  Ensure = 'Absent';
-}
-
 
 
 
@@ -105,8 +94,11 @@ choco install skype -y
 Write-Host "$(Get-Date -format 'u') - Instalando PDF Creator"
 choco install pdfcreator -y 
 
-Write-Host "$(Get-Date -format 'u') - Instalando Malwarebytes Anti-Malware"
-choco install malwarebytes -y 
+#Write-Host "$(Get-Date -format 'u') - Instalando Malwarebytes Anti-Malware"
+#choco install malwarebytes -y 
+
+Write-Host "$(Get-Date -format 'u') - Instalando AVG Free Anti-Virus"
+choco install avgantivirusfree -y 
 
 Write-Host "$(Get-Date -format 'u') - Instalando TeamViewer"
 choco install teamviewer -y 
@@ -124,21 +116,25 @@ choco install slack -y
 # Change to use Carbon New-Credential
 #----------------------------------------------------------
 # Usuario = DICOCEL
-Write-Host "$(Get-Date -format 'u') - Configurando usuario DICOCEL (Admin)"
-$secpasswd = ConvertTo-SecureString "Dicocel@2019-V2.0" -AsPlainText -Force
-$dicocel_creds = New-Object System.Management.Automation.PSCredential ("DICOCEL", $secpasswd)
-Install-User -Credential $dicocel_creds -Description "Conta Dicocel Administradora" -FullName "DICOCEL Admin" -Verbose
-Add-GroupMember -Name "Administrators" -Member "DICOCEL" -Verbose
-Start-Sleep 1
+if (!$(Test-USer -Username Dicocel)) {
+  Write-Host "$(Get-Date -format 'u') - Configurando usuario Dicocel (Admin)"
+  $secpasswd = ConvertTo-SecureString "senha@2019.2" -AsPlainText -Force
+  $dicocel_creds = New-Object System.Management.Automation.PSCredential ("Dicocel", $secpasswd)
+  Install-User -Credential $dicocel_creds -Description "Conta Dicocel Administradora" -FullName "Dicocel Admin" -Verbose
+  Add-GroupMember -Name "Administrators" -Member "Dicocel" -Verbose
+  Start-Sleep 1
+}
 
-# Usuario = 
-# Write-Host "$(Get-Date -format 'u') - Configurando Usuario $UserName (Users)"
-# $ecsecpasswd = ConvertTo-SecureString "$UserPass" -AsPlainText -Force
-# $eccreds = New-Object System.Management.Automation.PSCredential ($UserName, $ecsecpasswd)
-# Install-User -Credential $eccreds -Description "$UserName Local User" -FullName "$UserName" -Verbose
-# Add-GroupMember -Name "Users" -Member "$UserName" -Verbose
-# Start-Sleep 1
-
+if ($UserName){
+  if (!$(Test-USer -Username $UserName)) {
+    Write-Host "$(Get-Date -format 'u') - Configurando Usuario $UserName (Users)"
+    $ecsecpasswd = ConvertTo-SecureString "$UserPass" -AsPlainText -Force
+    $eccreds = New-Object System.Management.Automation.PSCredential ($UserName, $ecsecpasswd)
+    Install-User -Credential $eccreds -Description "$UserName Usuario Local" -FullName "$UserName" -Verbose
+    Add-GroupMember -Name "Users" -Member "$UserName" -Verbose
+    Start-Sleep 1
+  }
+}
 
 
 #----------------------------------------------------------
@@ -184,15 +180,17 @@ Set-HostsEntry -IPAddress 192.168.1.201 -HostName 'websrv01.dicocel.com.br'
 # Configura Nome do PC (Reboot)
 # e.x: Set-EnvironmentVariable -Name 'ETA-SERVER-NAME' -Value 'ETA-APP-AWS00' -ForProcess
 #----------------------------------------------------------
-# Write-Host "$(Get-Date -format 'u') - Configurando Nome do PC: $HostName & Reiniciando"
-# Rename-Computer -NewName "$HostName" -LocalCredential $dicocel_creds -Verbose -Restart
-#
+if {$hostname) {
+  Write-Host "$(Get-Date -format 'u') - Configurando Nome do PC: $HostName"
+  Write-Host "$(Get-Date -format 'u') - Necessario Reiniciar o Windows"
+  Rename-Computer -NewName "$HostName" -LocalCredential $dicocel_creds -Verbose -Restart
+}
 
 
 
 #----------------------------------------------------------
 # Restaurando 'Execution Policy'
 #----------------------------------------------------------
-Write-Host "$(Get-Date -format 'u') - Mudando 'Execution Policy' para valor original: $curr_policy"
-Set-ExecutionPolicy $curr_policy
+Write-Host "$(Get-Date -format 'u') - Mudando 'Execution Policy' para valor original: Restricted"
+Set-ExecutionPolicy Restricted
 
