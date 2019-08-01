@@ -97,8 +97,11 @@ choco install pdfcreator -y
 #Write-Host "$(Get-Date -format 'u') - Instalando Malwarebytes Anti-Malware"
 #choco install malwarebytes -y 
 
-Write-Host "$(Get-Date -format 'u') - Instalando AVG Free Anti-Virus"
-choco install avgantivirusfree -y 
+#Write-Host "$(Get-Date -format 'u') - Instalando AVG Free Anti-Virus"
+#choco install avgantivirusfree -y 
+
+Write-Host "$(Get-Date -format 'u') - Instalando Avast Free Anti-Virus"
+choco install avastfreeantivirus -y 
 
 Write-Host "$(Get-Date -format 'u') - Instalando TeamViewer"
 choco install teamviewer -y 
