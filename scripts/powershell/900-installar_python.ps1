@@ -2,11 +2,7 @@
 #
 # Info:
 #   - Mudar Execution-Policy para Bypass antes de executar script
-#   - 
 #
-#
-
-
 
 
 #----------------------------------------------------------
@@ -43,51 +39,18 @@ Write-Host "-----------------------------------INICIO---------------------------
 
 
 #----------------------------------------------------------
-# Chocolatey Instalacao de Pacotes
+# Chocolatey Instalacao de Python & Pip
 # Choco Info https://chocolatey.org/packages
 #----------------------------------------------------------
-# Write-Host "$(Get-Date -format 'u') - Instalando Vim-Tux Suite"
-# choco install vim-tux -y
-#
-Write-Host "$(Get-Date -format 'u') - Instalando Chocolatey Core Extensions"
+#  https://msdn.microsoft.com/en-us/library/windows/desktop/ms681382(v=vs.85).aspx
+#  Example: choco install python3 --params "/InstallDir:C:\your\install\path"
+
+Write-Host "$(Get-Date -format 'u') - Instalando Chocolatey Core Extensions`n"
 choco install chocolatey-core.extension -y
 
-Write-Host "$(Get-Date -format 'u') - Instalando Adobe PDF"
-choco install adobereader -y
+Write-Host "$(Get-Date -format 'u') - Instalando Python Versao 3.7`n"
+choco install python3 --params "/InstallDir:C:\Python3"
 
-Write-Host "$(Get-Date -format 'u') - Instalando Google Chrome"
-choco install googlechrome -y
-
-Write-Host "$(Get-Date -format 'u') - Instalando Adobe Flash Player Plugin"
-choco install flashplayerplugin -y
-
-Write-Host "$(Get-Date -format 'u') - Instalando Java JRE 8"
-choco install jre8 -y
-
-Write-Host "$(Get-Date -format 'u') - Instalando WinRaR"
-choco install winrar -y
-
-Write-Host "$(Get-Date -format 'u') - Instalando Skype"
-choco install skype -y
-
-Write-Host "$(Get-Date -format 'u') - Instalando PDF Creator"
-choco install pdfcreator -y
-
-# Errors
-# Write-Host "$(Get-Date -format 'u') - Instalando AVG Free Anti-Virus"
-# choco install avgantivirusfree -y
-
-Write-Host "$(Get-Date -format 'u') - Instalando Avast Free Anti-Virus"
-choco install avastfreeantivirus -y
-
-Write-Host "$(Get-Date -format 'u') - Instalando TeamViewer"
-choco install teamviewer -y
-
-Write-Host "$(Get-Date -format 'u') - Instalando Office 365 Business"
-choco install office365business -y
-
-Write-Host "$(Get-Date -format 'u') - Instalando Slack"
-choco install slack -y
 
 #----------------------------------------------------------
 # Restaurando 'Execution Policy'
