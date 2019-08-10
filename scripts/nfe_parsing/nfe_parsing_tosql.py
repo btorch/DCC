@@ -24,9 +24,12 @@ locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 
 def parse_config(configfile):
-    '''
+    """
     Takes care of parsing the configuration file
-    '''
+    param configfile: Dict containing configuration details
+
+    returns: Dict containing the data found on the config file
+    """
     results = {}
     c = ConfigParser()
     if not c.read(configfile):
@@ -36,6 +39,7 @@ def parse_config(configfile):
         """ Get Defaults """
         conf = dict(c.defaults())
         results['xml_directory'] = conf.get('xml_directory', './XML')
+        results['xml_transito'] = conf.get('xml_transito','TRANSITO')
         results['mes'] = conf.get('mes', '')
 
     if c.has_section('mysql'):
@@ -51,27 +55,53 @@ def parse_config(configfile):
     return results
 
 
-def get_xml_files(xml_directory,month):
 
+def get_xml_files(xml_directory,month,transito=''):
+    """
+    Gets the listing of XML files found on the location provided
+    If transito value has been provided then get the listing of the
+    files found on the transito folder
+
+    param xml_directory: Folder where the XML files exist
+    param month: month provided in the configuration file
+    param transito: name of folder where files in transit are located
+
+    returns: a list of all XML files found with absolute path
+    """
     month_locdict={1:'01 JANEIRO', 2:'02 FEVEREIRO', 3:'03 MARÇO', 4:'04 ABRIL',
                 5:'05 MAIO', 6:'06 JUNHO', 7:'07 JULHO', 8:'08 AGOSTO', 9:'09 SETEMBRO',
                 10:'10 OUTUBRO', 11:'11 NOVEMBRO', 12:'12 DEZEMBRO'}
 
     if month:
-        full_dir = xml_directory + '/' + month_locdict[int(month)]
+        if transito:
+            full_dir = xml_directory + '/' + month_locdict[int(month)] + '/' + transito
+        else:
+            full_dir = xml_directory + '/' + month_locdict[int(month)]
     else:
         month_location = time.strftime("%m %B")
-        full_dir = xml_directory + '/' + month_location
+        if transito:
+            full_dir = xml_directory + '/' + month_location + '/' + xml_transito
+        else:
+            full_dir = xml_directory + '/' + month_location
     
-    abs_path_files = []
+    # Criar lista dos aquivos
+    abs_files = []
     for file in os.listdir(full_dir):
-        abs_path_files.append(full_dir + '/' + file)
+        if os.path.isfile(os.path.join(full_dir, file)):
+            abs_files.append(full_dir + '/' + file)
 
-    return abs_path_files
+    return abs_files
+
 
 
 def open_db_conn(**db_config_dict):
+    """
+    Creates a DB connection and cursor
 
+    param db_config_dict: contains DB login/param needed
+
+    returns: the db connection and db cursor handler 
+    """
     try: 
         mdb_conn = mariadb.connect(**db_config_dict)
         if mdb_conn.is_connected():
@@ -85,22 +115,34 @@ def open_db_conn(**db_config_dict):
     return (mdb_conn,db_cursor)
 
 
-def insert_data(nfefile,month,mdb_conn,db_cursor):
-    '''
-    Function will open the XML File and 
-    transform it into a dict object
-    '''
 
+
+def parse_and_insert_data(nfefile,month,mdb_conn,db_cursor,recebido=False):
+    """
+    - Opens XML file and transforms it into a dict object
+    - Collects the data needed to be used by SQL
+    - Inserts the collected data into DB Table
+    - Updates status of prod_recebido
+
+    param nfefile: NFe XML file to be parsed aand inserted into db
+    param month: Month for which data is being analized
+    param mdb_conn: db connection handler
+    param db_cursor: db cursor handler
+    param recebido: tells whether xml has been received
+
+    returns: doesn't return anything only inserts data into database
+    """
     try: 
         with open(nfefile) as fd:
             print("Opening {0}".format(nfefile))
             doc = xmltodict.parse(fd.read())
     except IOError as e:
-        print ("I/O error({0}): {1}".format(e.errno, e.strerror))
+        print ("I/O Error ({0}): {1}".format(e.errno, e.strerror))
     except:
-        print ("I/O Unexpected error: {0}".format(sys.exc_info()[0]))
+        print ("I/O Erro Inesperado: {0}".format(sys.exc_info()[0]))
     else:
         fd.close()
+
 
     '''
     Data do mes do ano (YYYY-MM-DD) no qual o arquivo XML
@@ -139,7 +181,7 @@ def insert_data(nfefile,month,mdb_conn,db_cursor):
         valor_nota = Decimal(valor.get('vNF','0'))
 
     except KeyError as e:
-        print ("XML Parsing Error: Key not found {0}".format(e))
+        print ("XML Erro Analizando: Key not found {0}".format(e))
         raise
     except AttributeError as e:
         print ("Attribute Error: {0}".format(e))
@@ -155,27 +197,42 @@ def insert_data(nfefile,month,mdb_conn,db_cursor):
             prod_volumes = int(vols.get('qVol','0'))
             prod_embalagem = str(vols.get('esp','Nenhuma').capitalize())
     except KeyError as e:
-        print ("XML Parsing Error: Key not found {0}".format(e))
+        print ("XML Erro Analizando: Key not found {0}".format(e))
         raise
     except AttributeError as e:
         print ("Attribute Error: {0}".format(e))
-        raise
+        raise 
 
 
 
     '''
     Check if NFe already exits in the database
+    If transito is False then update prod_recebido to True
     '''
-    sql_select = "SELECT nfe_numero FROM transitando_nfe WHERE nfe_numero = %s"
-    sql_select_tuple = (nfe_numero,)
+    sql_nfe_check = "SELECT nfe_numero FROM transitando_nfe WHERE nfe_numero = %s"
+    sql_nfe_status = "SELECT prod_recebido FROM transitando_nfe WHERE nfe_numero = %s"
+    sql_nfe_update = "UPDATE transitando_nfe SET prod_recebido = True WHERE nfe_numero = %s"
+    sql_nfe_tuple = (nfe_numero,)
+
     insert_ok = False
     try:
-        db_cursor.execute(sql_select,sql_select_tuple)
+        db_cursor.execute(sql_nfe_check,sql_nfe_tuple)
         records = db_cursor.fetchall()
         if (nfe_numero,) not in records:
             insert_ok = True
         else:
-            print("Skipping Insert")
+            if recebido:
+                try:
+                    db_cursor.execute(sql_nfe_status,sql_nfe_tuple)
+                    status_recebido = db_cursor.fetchone()
+                    if False in status_recebido:
+                        db_cursor.execute(sql_nfe_update,sql_nfe_tuple)
+                        mdb_conn.commit()
+                        print("NFE: {0} status de recebido atualizado".format(nfe_numero))
+                except mariadb.Error as error:
+                    print("Error executando query: {0}".format(error))
+
+            print("Nota ja existente no banco de dados... Pulando")
     except mariadb.Error as error:
         print("Error executando SELECT: {0}".format(error))
 
@@ -185,13 +242,13 @@ def insert_data(nfefile,month,mdb_conn,db_cursor):
     '''
     transitando_nfe_insert = """INSERT INTO transitando_nfe (nfe_numero,mes_analisado,
                                 nfe_data,emissor_nome,emissor_cnpj,valor_bruto,valor_nota,
-                                prod_volumes,prod_embalagem) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+                                prod_volumes,prod_embalagem,prod_recebido) 
+                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
     transitando_nfe_tuple = (nfe_numero,mes_analisado,nfe_data,emissor_nome,emissor_cnpj,
-                             valor_bruto,valor_nota,prod_volumes,prod_embalagem)
+                             valor_bruto,valor_nota,prod_volumes,prod_embalagem,recebido)
     if insert_ok:
         try:
             sql_result = db_cursor.execute(transitando_nfe_insert,transitando_nfe_tuple)
-            '''mdb_conn.commit()'''
             print("NFe {0} valores inseridos na tabela transitando_nfe".format(nfe_numero))
         except mariadb.Error as error:
             mdb_conn.rollback()
@@ -202,7 +259,6 @@ def insert_data(nfefile,month,mdb_conn,db_cursor):
     '''
     Inserindo os Items da NFe na tabela transitando_nfe_items
     '''
-
     transitando_nfe_items_insert  = """INSERT INTO transitando_nfe_items (nfe_numero,
                                        nfe_data,prod_codigo,prod_descri,prod_quant) 
                                        VALUES (%s,%s,%s,%s,%s)"""
@@ -274,18 +330,32 @@ def main():
     #print("--- %s seconds ---" % (time.time() - start_time))
 
 
-    #start_time = time.time()
+    # Coletar lista de XML em transito
+    for nfe_xml in get_xml_files(conf['xml_directory'],conf['mes'],conf['xml_transito']):
+        try:
+            if os.path.isfile(nfe_xml):
+                parse_and_insert_data(nfe_xml,conf['mes'],mdb_conn,db_cursor,False)
+            else:
+                raise Exception("Erro: Arquivo Nao Encontrado {0}".format(nfe_xml))
+        except AssertionError as error:
+            print ("DB Erro Inesperado: {0}".format(error))
+            sys.exit(1)
+
+
+    # start_time = time.time()
+    # Coletar lista de XML recebidas
     for nfe_xml in get_xml_files(conf['xml_directory'],conf['mes']):
         try:
             if os.path.isfile(nfe_xml):             
-                insert_data(nfe_xml,conf['mes'],mdb_conn,db_cursor)
+                parse_and_insert_data(nfe_xml,conf['mes'],mdb_conn,db_cursor,True)
             else:
-                raise Exception("Error: File Not Found {0}".format(nfe_xml))
+                raise Exception("Erro: Arquivo Nao Encontrado {0}".format(nfe_xml))
         except AssertionError as error:
-            print ("DB Unexpected error: {0}".format(error))
+            print ("DB Erro Inesperado: {0}".format(error))
             sys.exit(1)
 
     #print("--- %s seconds ---" % (time.time() - start_time))
+
 
     if mdb_conn.is_connected():
         db_cursor.close()
