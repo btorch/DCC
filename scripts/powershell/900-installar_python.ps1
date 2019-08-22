@@ -49,7 +49,7 @@ Write-Host "$(Get-Date -format 'u') - Instalando Chocolatey Core Extensions`n"
 choco install chocolatey-core.extension -y
 
 Write-Host "$(Get-Date -format 'u') - Instalando Python Versao 3.7`n"
-choco install python3 --params "/InstallDir:C:\Python3"
+choco install python3 -y --params "/InstallDir:C:\Python3"
 
 
 #----------------------------------------------------------

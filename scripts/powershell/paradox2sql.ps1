@@ -5,7 +5,7 @@ $pdxPath = "C:\Users\torch\Downloads\Paradox2SQL"
 $Logfile = "C:\Users\torch\Downloads\Paradox2SQL\pdx2sql.log"
 
 # Array with all the relevant PDX directories currently used
-$PdxLocations = @("C:\automa-stg2")
+$PdxLocations = @("C:\automa-stg2", "C:\automa-stg2\caixa", "C:\automa-stg2\cheque", "C:\automa-stg2\ESTOQUE", "C:\automa-stg2\pagar", "C:\automa-stg2\receber")
 
 
 

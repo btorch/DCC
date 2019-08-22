@@ -80,15 +80,22 @@ def get_xml_files(xml_directory,month,transito=''):
     else:
         month_location = time.strftime("%m %B")
         if transito:
-            full_dir = xml_directory + '/' + month_location + '/' + xml_transito
+            full_dir = xml_directory + '/' + month_location + '/' + transito
         else:
             full_dir = xml_directory + '/' + month_location
     
     # Criar lista dos aquivos
     abs_files = []
-    for file in os.listdir(full_dir):
-        if os.path.isfile(os.path.join(full_dir, file)):
-            abs_files.append(full_dir + '/' + file)
+    if os.path.isdir(full_dir):
+        if not len(os.listdir(full_dir)) == 0:
+            for file in os.listdir(full_dir):
+                if file.endswith(".xml"):
+                    if os.path.isfile(os.path.join(full_dir, file)):
+                        abs_files.append(full_dir + '/' + file)
+        else:
+            print ("The directory is empty: {0}".format(full_dir))
+    else:
+        print ("The directory doesn't exist: {0}".format(full_dir))
 
     return abs_files
 
@@ -331,28 +338,32 @@ def main():
 
 
     # Coletar lista de XML em transito
-    for nfe_xml in get_xml_files(conf['xml_directory'],conf['mes'],conf['xml_transito']):
-        try:
-            if os.path.isfile(nfe_xml):
-                parse_and_insert_data(nfe_xml,conf['mes'],mdb_conn,db_cursor,False)
-            else:
-                raise Exception("Erro: Arquivo Nao Encontrado {0}".format(nfe_xml))
-        except AssertionError as error:
-            print ("DB Erro Inesperado: {0}".format(error))
-            sys.exit(1)
+    xml_files_transito = get_xml_files(conf['xml_directory'],conf['mes'],conf['xml_transito'])
+    if xml_files_transito:
+        for nfe_xml in xml_files_transito:
+            try:
+                if os.path.isfile(nfe_xml):
+                    parse_and_insert_data(nfe_xml,conf['mes'],mdb_conn,db_cursor,False)
+                else:
+                    raise Exception("Erro: Arquivo Nao Encontrado {0}".format(nfe_xml))
+            except AssertionError as error:
+                print ("DB Erro Inesperado: {0}".format(error))
+                sys.exit(1)
 
 
     # start_time = time.time()
     # Coletar lista de XML recebidas
-    for nfe_xml in get_xml_files(conf['xml_directory'],conf['mes']):
-        try:
-            if os.path.isfile(nfe_xml):             
-                parse_and_insert_data(nfe_xml,conf['mes'],mdb_conn,db_cursor,True)
-            else:
-                raise Exception("Erro: Arquivo Nao Encontrado {0}".format(nfe_xml))
-        except AssertionError as error:
-            print ("DB Erro Inesperado: {0}".format(error))
-            sys.exit(1)
+    xml_files_recb = get_xml_files(conf['xml_directory'],conf['mes'])
+    if xml_files_recb:
+        for nfe_xml in xml_files_recb:
+            try:
+                if os.path.isfile(nfe_xml):             
+                    parse_and_insert_data(nfe_xml,conf['mes'],mdb_conn,db_cursor,True)
+                else:
+                    raise Exception("Erro: Arquivo Nao Encontrado {0}".format(nfe_xml))
+            except AssertionError as error:
+                print ("DB Erro Inesperado: {0}".format(error))
+                sys.exit(1)
 
     #print("--- %s seconds ---" % (time.time() - start_time))
 
