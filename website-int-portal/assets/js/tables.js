@@ -7,9 +7,10 @@ function grabTransito(fornecedor) {
                 },
                 "processing": true,
                 //"responsive": true,
-                //"scrollY": "350px",
-                //"scrollCollapse": false,
-                //"paging": false,
+                "scrollY": 300,
+                //"scrollX": true,
+                "scrollCollapse": false,
+                "paging": true,
                 "ajax": {
                     "url": "http://192.168.1.204:8000/produtos/transitando",
                     "dataSrc": "",
@@ -24,8 +25,8 @@ function grabTransito(fornecedor) {
                     { data: 'nfe_data' },
                     { data: 'emissor_nome' },
                     { data: 'prod_volumes' },
-                    { data: 'valor_bruto', type: 'num-fmt' },
-                    { data: 'valor_nota', type: 'num-fmt' }
+                    { data: 'valor_bruto' },
+                    { data: 'valor_nota' }
                 ]
             });
             trans.column('0')
@@ -60,7 +61,7 @@ function grabRecb(fornecedor) {
                     { data: 'emissor_nome' },
                     { data: 'prod_volumes' },
                     { data: 'valor_bruto' },
-                    { data: 'valor_nota', type: 'num-fmt' }
+                    { data: 'valor_nota' }
                 ]
             });
             recb.column('0')
