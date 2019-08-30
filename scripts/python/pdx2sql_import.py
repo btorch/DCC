@@ -9,7 +9,8 @@ import mysql.connector as mariadb
 from optparse import OptionParser
 from configparser import ConfigParser
 from decimal import Decimal
-
+from logging.handlers import SysLogHandler, RotatingFileHandler
+import logging
 
 
 '''
@@ -57,7 +58,7 @@ def parse_config(configfile):
 
 
 
-def run_import(sqlfile, conn, table):
+def run_import(sqlfile, conn, table,logger):
     '''
     refs:
         checking on encoding
@@ -68,13 +69,14 @@ def run_import(sqlfile, conn, table):
     start = time.time()
     try: 
         with open(sqlfile,"r",encoding="ISO-8859-1") as fd:
-            print("Opening {0}".format(sqlfile))
+            logger.info("Opening {0}".format(sqlfile))
             lines = fd.readlines()
     except IOError as e:
-        print ("I/O Error ({0}): {1}".format(e.errno, e.strerror))
+        logger.error("I/O Error ({0}): {1}".format(e.errno, e.strerror))
         sys.exit(1)
     except:
-        #print ("I/O Erro Inesperado: {0}".format(sys.exc_info()[2]))
+        logger.error("I/O Erro Inesperado: {0} : {1}".format(sys.exc_info()[0],sys.exc_info()[1]))
+        logger.exception('Oh noes!')
         raise
         sys.exit(1)
     else:
@@ -82,8 +84,8 @@ def run_import(sqlfile, conn, table):
 
     end = time.time()
     elapsed = (end - start)
-    print ("Read {0} lines into memory".format(len(lines)))
-    print ("Time elapsed to read SQL file: {:.4f} s".format(elapsed))
+    logger.info("Read {0} lines into memory".format(len(lines)))
+    logger.info("Time elapsed to read SQL file: {:.4f} s".format(elapsed))
 
 
 
@@ -94,13 +96,13 @@ def run_import(sqlfile, conn, table):
         cur.execute(sql_delete)
     except mariadb.Error as error:
         conn.rollback()
-        print("Error executando DELETE query: {0}".format(error))
-        print("Query {0}".format(sql_delete))
+        logger.error("Error executando DELETE query: {0}".format(error))
+        logger.error("Query {0}".format(sql_delete))
         sys.exit(1)
 
     end = time.time()
     elapsed = (end - start)
-    print ("Time elapsed to delete all records: {:.4f} s".format(elapsed))
+    logger.info("Time elapsed to delete all records: {:.4f} s".format(elapsed))
 
 
     start = time.time()
@@ -111,20 +113,33 @@ def run_import(sqlfile, conn, table):
             cur.execute(line)
         except mariadb.Error as error:
             conn.rollback()
-            print("Error executando INSERT query: {0}".format(error))
-            print("Query : {0}".format(line))
+            logger.error("Error executando INSERT query: {0}".format(error))
+            logger.error("Query : {0}".format(line))
             sys.exit(1)
 
     end = time.time()
     elapsed = (end - start)
-    print ("Time elapsed to insert all records: {:.4f} s".format(elapsed))
+    logger.info("Time elapsed to insert all records: {:.4f} s".format(elapsed))
 
 
     conn.commit() 
 
 
 
-def main():   
+def main():
+
+    # Create Logger
+    log_path = '/tmp/pdx2sql_importer.log'
+    logger = logging.getLogger('pdx2sql_importer')
+    logger.setLevel(logging.DEBUG)
+    # Create Rotating Handler
+    handler = RotatingFileHandler(log_path,maxBytes=5242880,backupCount=5)
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s: %(message)s')
+    handler.setFormatter(formatter)
+    # Set handler to logger
+    logger.addHandler(handler)
+
 
     parser = OptionParser(usage="usage: %prog [options]",
                           version="%prog 1.0")
@@ -155,29 +170,29 @@ def main():
 
     sqlfile = options.sqlfile
     if not os.path.isfile(sqlfile):
-        print ("ERROR: File {0} has not been found".format(sqlfile))
+        logger.error("File {0} has not been found".format(sqlfile))
         sys.exit(1)
 
     table = conf['table']
     if not table:
-        print ("ERROR: Table name is empty on {0} file".format(options.config))
+        logger.error("Table name is empty on {0} file".format(options.config))
         sys.exit(1)
 
     try:
         conn = mariadb.connect(**dbconfig_dict)
         if conn.is_connected(): 
-            run_import(sqlfile,conn,table)
-            print("SQL Import has been finished")
+            run_import(sqlfile,conn,table,logger)
+            logger.info("SQL Import has been finished")
 
     except mariadb.Error as e:
         conn.close()
-        print ("ERROR: {}".format(e))
+        logger.error("{}".format(e))
         sys.exit(1)
 
 
     if conn.is_connected():
         conn.close()
-        print("DB conn fechada")
+        logger.info("DB conn fechada")
    
     return 0
 
