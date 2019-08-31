@@ -13,9 +13,18 @@ from logging.handlers import SysLogHandler, RotatingFileHandler
 import logging
 
 
-'''
-Setting up some environmental variables
-'''
+"""
+Info:
+    - Install script into /opt/pdx2sql/bin
+    - Install configs into /opt/pdx2sql/etc
+    - Logging location /opt/pdx2sql/logs
+    - Sync/Copy SQL files to be processed into /opt/pdx2sql/imports
+    - Create cronjobs pointing to each config
+"""
+
+"""
+Setting up environmental variables
+"""
 #os.environ['LC_ALL'] = 'C'
 #os.environ['LANG'] = 'en_US.UTF-8'
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
@@ -25,8 +34,8 @@ locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 def parse_config(configfile):
     """
     Takes care of parsing the configuration file
-    param configfile: Dict containing configuration details
 
+    param configfile: Dict containing configuration details
     returns: Dict containing the data found on the config file
     """
     results = {}
@@ -34,20 +43,19 @@ def parse_config(configfile):
     if not c.read(configfile):
         raise Exception("Arquivo de config vazio")
         sys.exit(1)
-    
-    """ Get Defaults """
-    """    
     else:
+        """ Get Defaults """
         conf = dict(c.defaults())
-        results['mes'] = conf.get('mes', '')
-    """
+        results['logfile'] = conf.get('logfile', '/opt/pdx2sql/logs/pdx2sql_import.log')
+        
 
+    # Go over MySQL section
     if c.has_section('mysql'):
         conf = dict(c.items('mysql'))
         results['host'] = conf.get('host', '127.0.0.1')
-        results['user'] = conf.get('user', 'web01')
+        results['user'] = conf.get('user', 'web02')
         results['pass'] = conf.get('pass','')
-        results['db'] = conf.get('db','sistema_in')
+        results['db'] = conf.get('db','sistema_in_test')
         results['table'] = conf.get('table','')
         results['sqlfile'] = conf.get('sqlfile','')
     else:
@@ -58,14 +66,30 @@ def parse_config(configfile):
 
 
 
-def run_import(sqlfile, conn, table,logger):
-    '''
+def run_import(sqlfile,conn,table,logger):
+    """
+    Opens and reads all query lines of the SQL
+    file that has been created on Windows Server
+    from a Paradox to MySQL export logic
+
+    With a transaction it will delete all existing
+    rows from the table in question and then
+    it goes over each line and executes
+    the SQL insert statements into the table
+
+    param sqlfile: The sql file location
+    param conn: The MySQL connection object
+    param table: The name of the MySQL Table
+    param logger: The logging object 
+
     refs:
-        checking on encoding
-        import chardet 
-        chardet.detect(open(file,'rb').read())['encoding']
+        Windows file needed ISO-8859-1 for Latin
+        import chardet; chardet.detect(open(file,'rb').read())['encoding']
         https://stackoverflow.com/questions/19699367/unicodedecodeerror-utf-8-codec-cant-decode-byte
-    '''
+    """
+
+
+    # Reading SQL file into memory
     start = time.time()
     try: 
         with open(sqlfile,"r",encoding="ISO-8859-1") as fd:
@@ -88,7 +112,7 @@ def run_import(sqlfile, conn, table,logger):
     logger.info("Time elapsed to read SQL file: {:.4f} s".format(elapsed))
 
 
-
+    # Deleting all existing data from table
     start = time.time()
     sql_delete = "DELETE FROM {0}".format(table)
     try:
@@ -105,6 +129,7 @@ def run_import(sqlfile, conn, table,logger):
     logger.info("Time elapsed to delete all records: {:.4f} s".format(elapsed))
 
 
+    # Inserting the data into the table
     start = time.time()
     for line in lines:
         line = line.rstrip()
@@ -120,16 +145,26 @@ def run_import(sqlfile, conn, table,logger):
     end = time.time()
     elapsed = (end - start)
     logger.info("Time elapsed to insert all records: {:.4f} s".format(elapsed))
-
-
     conn.commit() 
 
 
 
 def main():
 
+    parser = OptionParser(usage="usage: %prog [options]",
+                          version="%prog 1.0")
+    parser.add_option("-c", "--conf",
+        action="store", type="string",
+        default="./config.cfg",
+        dest="config",
+        help='Local do arquivo com configuracoes [default: %default]'
+    )
+    (options, args) = parser.parse_args()
+    conf = parse_config([options.config, ])
+
+
     # Create Logger
-    log_path = '/tmp/pdx2sql_importer.log'
+    log_path = conf['logfile']
     logger = logging.getLogger('pdx2sql_importer')
     logger.setLevel(logging.DEBUG)
     # Create Rotating Handler
@@ -141,23 +176,6 @@ def main():
     logger.addHandler(handler)
 
 
-    parser = OptionParser(usage="usage: %prog [options]",
-                          version="%prog 1.0")
-    parser.add_option("-c", "--conf",
-        action="store", type="string",
-        default="./config.cfg",
-        dest="config",
-        help='Local do arquivo com configuracoes [default: %default]'
-    )
-    parser.add_option("-f", "--sqlfile",
-        action="store", type="string",
-        default="paradox.sql",
-        dest="sqlfile",
-        help='Arquivo SQL para ser importado [default: %default]'
-    )    
-                
-    (options, args) = parser.parse_args()
-    conf = parse_config([options.config, ])
 
     dbconfig_dict = {
         'user': conf['user'],
@@ -168,7 +186,7 @@ def main():
         'collation':'utf8mb4_unicode_ci'
     }
 
-    sqlfile = options.sqlfile
+    sqlfile = conf['sqlfile']
     if not os.path.isfile(sqlfile):
         logger.error("File {0} has not been found".format(sqlfile))
         sys.exit(1)
