@@ -22,7 +22,7 @@ dbconfig2_dict = {
     'user': 'web02',
     'password': 'dicocel2019',
     'host': '127.0.0.1',
-    'database': 'sistema_in',
+    'database': 'sistema_in_test',
     'charset':  'utf8mb4',
     'collation':'utf8mb4_unicode_ci'
 }
@@ -123,26 +123,46 @@ class ItemsNfe(object):
 class Vendas(object):
     """
     Retreives information related to sale numbers
+    Testing: CURDATE() - INTERVAL 100 DAY
+    00053 = VENDAS INTERNA
+    00015 = VENDAS DIRETAS
+    04773 = DICOCEL
     """
     def on_get(self, req, resp, tipo):
 
         if tipo == "dia":
             sqlstm = """SELECT p.Seq AS Pedido, p.Status, p.Data, p.NtFiscal, p.Codcli AS ClienteNum,
-                        (SELECT c.nomecli FROM CADCLI c WHERE c.codcli = p.Codcli ) AS Cliente,
+                        (SELECT c.nomecli FROM Cadcli c WHERE c.codcli = p.Codcli ) AS Cliente,
                         p.CodVen AS VendedorNum,
                         (SELECT v.Descricao FROM Cadven v WHERE v.Codigo = p.CodVen ) AS Vendedor,
                         FORMAT(p.TotPedido,2,'de_DE') AS TotalPedido, p.Qtd_Parc AS Parcelas FROM PEDIDOS p 
-                        WHERE p.Data = (CURDATE() - INTERVAL 100 DAY) and
+                        WHERE p.Data = DATE(CONVERT_TZ(CURDATE(),'+00:00','-03:00')) and
                         p.Codcli != '04773' ORDER BY p.CodVen """
 
         elif tipo == "semana":
             sqlstm = """SELECT p.Seq AS Pedido, p.Status, p.Data, p.NtFiscal, p.Codcli AS ClienteNum,
-                        (SELECT c.nomecli FROM CADCLI c WHERE c.codcli = p.Codcli ) AS Cliente,
+                        (SELECT c.nomecli FROM Cadcli c WHERE c.codcli = p.Codcli ) AS Cliente,
                         p.CodVen AS VendedorNum,
                         (SELECT v.Descricao FROM Cadven v WHERE v.Codigo = p.CodVen ) AS Vendedor,
                         FORMAT(p.TotPedido,2,'de_DE') AS TotalPedido, p.Qtd_Parc AS Parcelas FROM PEDIDOS p 
-                        WHERE WEEK(p.Data) = WEEK(DATE(CONVERT_TZ((CURDATE() - INTERVAL 100 DAY),'+00:00','-03:00')))
+                        WHERE WEEK(p.Data) = WEEK(DATE(CONVERT_TZ(CURDATE(),'+00:00','-03:00')))
                         and p.Codcli != '04773' ORDER BY p.CodVen """
+
+        elif tipo == "numdia":
+            sqlstm = """SELECT COUNT(Seq) AS numped_dia FROM PEDIDOS
+                        WHERE Data = DATE(CONVERT_TZ(CURDATE(),'+00:00','-03:00'))"""
+
+        elif tipo == "numsemana":
+            sqlstm = """SELECT COUNT(Seq) AS numped_semana FROM PEDIDOS
+                        WHERE WEEK(Data) = WEEK(DATE(CONVERT_TZ(CURDATE(),'+00:00','-03:00')))"""
+
+        elif tipo == "valordia":
+            sqlstm = """SELECT FORMAT(SUM(TotPedido),2,'de_DE') AS totaldia FROM PEDIDOS 
+                        WHERE Data = DATE(CONVERT_TZ(CURDATE(),'+00:00','-03:00'))"""
+
+        elif tipo == "valorsemana":
+            sqlstm = """SELECT FORMAT(SUM(TotPedido),2,'de_DE') AS totalsemana FROM PEDIDOS 
+                        WHERE WEEK(Data) = WEEK(DATE(CONVERT_TZ(CURDATE(),'+00:00','-03:00')))"""
 
 
         resp.status = falcon.HTTP_200
