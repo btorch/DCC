@@ -96,11 +96,10 @@ def run_import(sqlfile,conn,table,logger):
             logger.info("Opening {0}".format(sqlfile))
             lines = fd.readlines()
     except IOError as e:
-        logger.error("I/O Error ({0}): {1}".format(e.errno, e.strerror))
+        logger.exception("I/O Error ({0}): {1}".format(e.errno, e.strerror))
         sys.exit(1)
     except:
-        logger.error("I/O Erro Inesperado: {0} : {1}".format(sys.exc_info()[0],sys.exc_info()[1]))
-        logger.exception('Oh noes!')
+        logger.exception("I/O Erro Inesperado: {0} : {1}".format(sys.exc_info()[0],sys.exc_info()[1]))
         raise
         sys.exit(1)
     else:
@@ -121,15 +120,15 @@ def run_import(sqlfile,conn,table,logger):
     except mariadb.Error as error:
         conn.rollback()
         logger.error("Error executando DELETE query: {0}".format(error))
-        logger.error("Query {0}".format(sql_delete))
+        logger.exception("Query {0}".format(sql_delete))
         sys.exit(1)
 
     end = time.time()
     elapsed = (end - start)
-    logger.info("Time elapsed to delete all records: {:.4f} s".format(elapsed))
+    logger.info("Time elapsed to delete all {0} record(s): {1:.4f} s".format(cur.rowcount,elapsed))
 
 
-    # Inserting the data into the table
+    # Inserting updated data into the table
     start = time.time()
     for line in lines:
         line = line.rstrip()
@@ -144,8 +143,9 @@ def run_import(sqlfile,conn,table,logger):
 
     end = time.time()
     elapsed = (end - start)
-    logger.info("Time elapsed to insert all records: {:.4f} s".format(elapsed))
-    conn.commit() 
+    logger.info("Time elapsed to insert all {0} record(s): {1:.4f} s".format(len(lines),elapsed))
+    conn.commit()
+    cur.close()
 
 
 
@@ -163,20 +163,24 @@ def main():
     conf = parse_config([options.config, ])
 
 
-    # Create Logger
+    '''
+    Setting up the Logger
+    '''
     log_path = conf['logfile']
     logger = logging.getLogger('pdx2sql_importer')
     logger.setLevel(logging.DEBUG)
-    # Create Rotating Handler
+    # Rotating Handler
     handler = RotatingFileHandler(log_path,maxBytes=5242880,backupCount=5)
     handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s: %(message)s')
     handler.setFormatter(formatter)
-    # Set handler to logger
     logger.addHandler(handler)
 
 
-
+    '''
+    Setting up Mariadb dictionary
+    settings to be used on connection setup
+    '''
     dbconfig_dict = {
         'user': conf['user'],
         'password': conf['pass'],
@@ -203,14 +207,13 @@ def main():
             logger.info("SQL Import has been finished")
 
     except mariadb.Error as e:
-        conn.close()
-        logger.error("{}".format(e))
+        logger.exception("{}".format(e))
         sys.exit(1)
 
 
     if conn.is_connected():
         conn.close()
-        logger.info("DB conn fechada")
+        logger.info("Fechando connecao com MariadDb")
    
     return 0
 
