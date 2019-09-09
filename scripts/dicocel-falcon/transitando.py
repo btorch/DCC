@@ -1,7 +1,7 @@
 import falcon
 import json
+import datetime
 import mysql.connector as mariadb
-
 
 
 """
@@ -22,7 +22,7 @@ dbconfig2_dict = {
     'user': 'web02',
     'password': 'dicocel2019',
     'host': '127.0.0.1',
-    'database': 'sistema_in_test',
+    'database': 'sistema_in',
     'charset':  'utf8mb4',
     'collation':'utf8mb4_unicode_ci'
 }
@@ -123,7 +123,7 @@ class ItemsNfe(object):
 class Vendas(object):
     """
     Retreives information related to sale numbers
-    Testing: CURDATE() - INTERVAL 100 DAY
+    Testing: (NOW() - INTERVAL 60 DAY)
     00053 = VENDAS INTERNA
     00015 = VENDAS DIRETAS
     04773 = DICOCEL
@@ -187,6 +187,39 @@ class Vendas(object):
                 for x in [[str(row[key]) for key in row] for row in result]:
                     json_data.append( dict(zip(cols,x)) )
             resp.body = json.dumps(json_data, ensure_ascii=False)
+        except mariadb.Error as e:
+            resp.status = '400 Bad Request'
+            resp.body = "ERROR: {}".format(e)
+
+
+
+class chartVendas(object):
+    """
+    Retreives the items related to an NFe number
+    """
+    def on_get(self, req, resp):
+        resp.status = falcon.HTTP_200
+        
+        sqlstm = """SELECT FORMAT(SUM(TotPedido),2,'de_DE') AS totalmes 
+                    FROM PEDIDOS WHERE MONTH(Data) = %s"""
+        try:
+            conn = mariadb.connect(**dbconfig2_dict)
+            if conn.is_connected():
+                cursor = conn.cursor(named_tuple=True)
+
+                d = datetime.date.today()
+                result = []
+                for x in range(1,(d.month)):
+                    cursor.execute(sqlstm,(x,))
+                    res = cursor.fetchall()
+                    result.append(res[0].totalmes)
+
+                cursor.close()
+                conn.close()
+                json_data = result
+                
+            resp.body = json.dumps(json_data, ensure_ascii=False)
+            
         except mariadb.Error as e:
             resp.status = '400 Bad Request'
             resp.body = "ERROR: {}".format(e)
