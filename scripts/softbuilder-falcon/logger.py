@@ -1,6 +1,6 @@
 import os
 import sys
-from logging.handlers import RotatingFileHandle,StreamHandler
+from logging.handlers import SysLogHandler, RotatingFileHandler
 import logging
 
 # Logging Levels
@@ -12,19 +12,30 @@ import logging
 # DEBUG 10
 # NOTSET    0
 
+loggers = {}
 
-def set_up_logging():
-    log_path = '/tmp/falcon_pedidos.log'
-    with open(log_path, 'a+'):
-        pass
+def set_up_logging(name):
+    global loggers
 
-    logger = logging.getLogger('falcon_pedidos')
-    logger.setLevel(logging.DEBUG)
-    #handler = RotatingFileHandler(log_path,maxBytes=5242880,backupCount=5)
-    handler = StreamHandler(sys.stdout)
-    #handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s: %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    if loggers.get(name):
+        return loggers.get(name)
+    else:
+        if not 'logs' in os.getcwd():
+            log_path = os.getcwd() + '/logs/falcon_pedidos.log'
+        else:
+            log_path = os.getcwd() + '/falcon_pedidos.log'
 
-    return logger
+        with open(log_path, 'a+'):
+            pass
+
+        logger = logging.getLogger(name)
+        logger.setLevel(logging.INFO)
+        handler = RotatingFileHandler(log_path,maxBytes=5242880,backupCount=5)
+        #handler = logging.StreamHandler()
+        handler.setLevel(logging.INFO)
+        formatter = logging.Formatter('[%(asctime)s] [%(name)s] [%(process)d]:[%(thread)d] [%(levelname)s]: %(message)s]')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        loggers[name] = logger
+
+        return logger
