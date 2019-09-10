@@ -22,7 +22,7 @@ dbconfig2_dict = {
     'user': 'web02',
     'password': 'dicocel2019',
     'host': '127.0.0.1',
-    'database': 'sistema_in',
+    'database': 'sistema_in_test',
     'charset':  'utf8mb4',
     'collation':'utf8mb4_unicode_ci'
 }
