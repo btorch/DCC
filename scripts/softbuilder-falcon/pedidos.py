@@ -5,6 +5,7 @@ import mysql.connector as mariadb
 import configparser
 import io
 import os
+import sys
 import uuid
 import mimetypes
 from .logger import set_up_logging
@@ -316,9 +317,14 @@ class Pedido(object):
             }
 
         except IOError as e:
-            logger.error('I/O Error: {}'.format(e))
+            logger.error('I/O Erro: {}'.format(e))
             msg = 'Erro abrindo arquivo de configuracao'
-            raise falcon.HTTPFailedDependency('Erro lendo configuracao', msg, xheader)
+            raise falcon.HTTPFailedDependency('Erro lendo configuracao (1)', msg, xheader)
+
+        except KeyError as e:
+            logger.error('KeyError Erro: {}'.format(e))
+            msg = 'Problema com Keys do DB Config {}'.format(e)
+            raise falcon.HTTPFailedDependency('DB Config KeyError (2)', msg, xheader)
 
 
         try:
@@ -338,7 +344,7 @@ class Pedido(object):
             if len(pedido_items) == 0:
                 msg = 'Pedido Sem Nenhum item'
                 logger.error('JSON Media Error: {0} (uri: {1}) (transid:{2})'.format(msg, req.relative_uri, transid))
-                raise falcon.HTTPBadRequest("JSON faltando dados", msg, xheader)
+                raise falcon.HTTPBadRequest("JSON faltando dados (3)", msg, xheader)
 
             logger.info('JSON syntax ok (uri: {1}) (transid:{0})'.format(transid, req.relative_uri))
 
@@ -346,10 +352,15 @@ class Pedido(object):
             logger.error('{0} {1} (uri: {2}) (transid:{3})'.format(e.title, e.description, req.relative_uri, transid))
             raise falcon.HTTPBadRequest(e.title, e.description, xheader)
 
+        except KeyError as e:
+            logger.error('JSON Pedido KeyError : {}'.format(e))
+            msg = 'Problema com Keys do JSON Pedido {}'.format(e)
+            raise falcon.HTTPFailedDependency('JSON Pedido KeyError (4)', msg, xheader)
+
         except:
             msg = 'Syntax do Objeto JSON nao aceito'
             logger.error('JSON Syntax Erro: {0} (uri: {1}) (transid:{2})'.format(msg, req.relative_uri, transid))
-            raise falcon.HTTPBadRequest("JSON Syntax Erro", msg, xheader)
+            raise falcon.HTTPBadRequest("JSON Syntax Erro (5)", msg, xheader)
 
 
         try:
@@ -376,7 +387,7 @@ class Pedido(object):
                 except mariadb.Error as e:
                     logger.error('Database Erro: Pedido ID Existente {0} (transid:{1})'.format(e, transid))
                     conn.rollback()
-                    title = "Database Pedido ID Existente"
+                    title = "Database Pedido ID Existente (6)"
                     description = "ID Duplicado - {0}".format(e)
                     raise falcon.HTTPConflict(title, description, xheader)
 
@@ -400,19 +411,27 @@ class Pedido(object):
                         except mariadb.Error as e:
                             logger.error('Database Item Error {0} (transid:{1})'.format(e, transid))
                             conn.rollback()
-                            title = "Database Item Error"
+                            title = "Database Item Error (7)"
                             description = "{0}".format(e)
                             raise falcon.HTTPConflict(title, description, xheader)
 
 
+                except KeyError as e:
+                    conn.rollback()
+                    logger.error('JSON Item KeyError : {}'.format(e))
+                    msg = 'Problema com Keys do JSON Item {}'.format(e)
+                    raise falcon.HTTPBadRequest('JSON Item KeyError (8)', msg, xheader)
+
                 except falcon.errors.HTTPBadRequest as e:
+                    conn.rollback()
                     logger.error('{0} {1} (uri: {2}) (transid:{3})'.format(e.title, e.description, req.relative_uri, transid))
                     raise falcon.HTTPBadRequest(e.title, e.description, xheader)
 
                 except:
-                    msg = 'Syntax do Objeto JSON nao aceito'
+                    conn.rollback()
+                    msg = 'Syntax do Objeto JSON nao aceito {}'.format(sys.exc_info()[0])
                     logger.error('JSON Syntax Erro: {0} (uri: {1}) (transid:{2})'.format(msg, req.relative_uri, transid))
-                    raise falcon.HTTPBadRequest("JSON Syntax Error", msg, xheader)
+                    raise falcon.HTTPBadRequest("JSON Syntax Erro (9)", msg, xheader)
 
                 conn.commit()
                 logger.info('Insert query committed (uri: {1}) (transid:{0})'.format(transid,req.relative_uri))
@@ -424,7 +443,7 @@ class Pedido(object):
 
         except mariadb.Error as e:
             logger.error('Database Connection Error {0} (transid:{1})'.format(e, transid))
-            title = "Database Connection Error"
+            title = "Database Connection Error (10)"
             description = "{0}".format(e)
             raise falcon.HTTPInternalServerError(title, description, xheader)
 
