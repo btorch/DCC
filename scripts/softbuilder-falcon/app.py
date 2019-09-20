@@ -1,6 +1,6 @@
 import falcon
 from falcon_cors import CORS
-from .pedidos import PedidoHeader, PedidoItem, AuthMiddleware, RequireJSON
+from .pedidos import Pedido, AuthMiddleware, RequireJSON
 
 
 #locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
@@ -17,9 +17,14 @@ cors = CORS(allow_all_origins=True,allow_all_headers=True,
 #api = application = falcon.API(middleware=[cors.middleware,AuthMiddleware(),RequireJSON()])
 api = application = falcon.API(middleware=[cors.middleware,AuthMiddleware(),RequireJSON()])
 
+'''
+PedidoHeader, PedidoItem, 
 pedido_header = PedidoHeader()
 pedido_item = PedidoItem()
 
 api.add_route('/pedido/header', pedido_header)
 api.add_route('/pedido/item', pedido_item)
+'''
+pedido = Pedido()
+api.add_route('/pedido', pedido)
 

@@ -27,7 +27,7 @@ class AuthMiddleware(object):
             logger.info('"Healthcheck Only" (uri: {1}) (transid:{0})'.format(transid, req.relative_uri))
             return True
         '''
-        
+
         if auth_key is None:
             msg = 'Favor mandar X-Auth-Key header no pedido do API'
             logger.error('Auth key esta vazia (uri: {1}) (transid:{0})'.format(transid, req.relative_uri))
@@ -76,13 +76,13 @@ class RequireJSON(object):
 
         if not req.client_accepts_json:
             msg = 'Somente respondemos pedidos de API em JSON'
-            logger.error('Client no aceita JSON (uri: {1}) (transid:{0})'.format(transid, req.relative_uri))
+            logger.error('Cliente nao aceita JSON (uri: {0}) (transid:{1})'.format(req.relative_uri, transid))
             raise falcon.HTTPNotAcceptable(msg, xheader, ref='https://json.org')
                 
         if req.method in ('POST', 'PUT'):
             if 'application/json' not in req.content_type:
                 msg = 'Somente pedidos de API em JSON aceito'
-                logger.error('JSON media type obrigatorio (uri: {1}) (transid:{0})'.format(transid, req.relative_uri))
+                logger.error('JSON media type obrigatorio (uri: {0}) (transid:{1})'.format(req.relative_uri, transid))
                 raise falcon.HTTPUnsupportedMediaType(msg, xheader, href='https://json.org')
 
 
@@ -282,6 +282,157 @@ class PedidoItem(object):
                 conn.close()
                 logger.info('DB connection closed (uri: {1}) (transid:{0})'.format(transid,req.relative_uri))
 
+
+
+
+class Pedido(object):
+
+    def on_put(self, req, resp):
+        #resp.status = falcon.HTTP_201
+        auth_key = req.get_header('x-auth-key')
+        transid = req.context.transid
+        xheader = {"X-Trans-Id":"{}".format(transid)}
+
+        """
+        Set Mariadb conn from config
+        https://gist.github.com/btorch/7c4ab5c000a75e087983852ff67548a4
+        """
+        try:
+            if not 'softbuilder-falcon' in os.getcwd():
+                config_path = os.getcwd() + '/softbuilder-falcon/dbconfig.ini'
+            else:
+                config_path = os.getcwd() + '/dbconfig.ini'
+
+            config = configparser.ConfigParser()
+            config.read(config_path)
+
+            dbconfig = {
+                'user': config['mariadb']['user'],
+                'password': config['mariadb']['password'],
+                'host': config['mariadb']['host'],
+                'database': config['mariadb']['database'],
+                'charset':  config['mariadb']['charset'],
+                'collation': config['mariadb']['collation']
+            }
+
+        except IOError as e:
+            logger.error('I/O Error: {}'.format(e))
+            msg = 'Erro abrindo arquivo de configuracao'
+            raise falcon.HTTPFailedDependency('Erro lendo configuracao', msg, xheader)
+
+
+        try:
+            pedido_header = req.media.get('header')
+            pedido_id = pedido_header['id']
+            pedido_data = pedido_header['data']
+            pedido_codcli = pedido_header['codcli']
+            pedido_codven = pedido_header['codven']
+            pedido_condpgto = pedido_header['condpgto']
+            pedido_formpgto = pedido_header['formpgto']
+            pedido_totped = pedido_header['totped']
+            pedido_status = pedido_header['status']
+            pedido_obs = pedido_header['obs']
+            ''' Items do Pedido '''
+            pedido_items = req.media.get('items')
+
+            if len(pedido_items) == 0:
+                msg = 'Pedido Sem Nenhum item'
+                logger.error('JSON Media Error: {0} (uri: {1}) (transid:{2})'.format(msg, req.relative_uri, transid))
+                raise falcon.HTTPBadRequest("JSON faltando dados", msg, xheader)
+
+            logger.info('JSON syntax ok (uri: {1}) (transid:{0})'.format(transid, req.relative_uri))
+
+        except falcon.errors.HTTPBadRequest as e:
+            logger.error('{0} {1} (uri: {2}) (transid:{3})'.format(e.title, e.description, req.relative_uri, transid))
+            raise falcon.HTTPBadRequest(e.title, e.description, xheader)
+
+        except:
+            msg = 'Syntax do Objeto JSON nao aceito'
+            logger.error('JSON Syntax Erro: {0} (uri: {1}) (transid:{2})'.format(msg, req.relative_uri, transid))
+            raise falcon.HTTPBadRequest("JSON Syntax Erro", msg, xheader)
+
+
+        try:
+            conn = mariadb.connect(**dbconfig)
+            if conn.is_connected():
+                logger.info('Database connection established (uri: {1}) (transid:{0})'.format(transid, req.relative_uri))
+                cursor = conn.cursor()
+
+                '''Cabecario do Pedido'''
+                header_sqlstm = """INSERT INTO pedido (id, dta_lanc, data, codcli,
+                                   codven, condpgto, formpgto, totped, status, obs)
+                                   VALUES (%s, NOW(), %s, %s, %s, %s, %s, %s, %s, %s)
+                                """    
+
+                header_tuple = (pedido_id, pedido_data, pedido_codcli, 
+                                pedido_codven, pedido_condpgto, pedido_formpgto,
+                                pedido_totped, pedido_status, pedido_obs)
+
+                try:
+                    cursor.execute(header_sqlstm, header_tuple)
+                    hrcount = cursor.rowcount
+                    logger.info('Header [{0}] inserted into pedido table (uri: {1}) (transid:{2})'.format(hrcount, req.relative_uri, transid))
+
+                except mariadb.Error as e:
+                    logger.error('Database Erro: Pedido ID Existente {0} (transid:{1})'.format(e, transid))
+                    conn.rollback()
+                    title = "Database Pedido ID Existente"
+                    description = "ID Duplicado - {0}".format(e)
+                    raise falcon.HTTPConflict(title, description, xheader)
+
+
+                '''Items do Pedido'''
+                item_sqlstm = """INSERT INTO prdped (id, data, codcli, codven,
+                                 cdpro, qtd, prunit, desconto, total)
+                                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                              """
+            
+                try:
+                    for item in pedido_items:
+                        item_tuple = (pedido_id, pedido_data, pedido_codcli,
+                                      pedido_codven, item['cdpro'], item['qtd'],
+                                      item['prunit'], item['desconto'], item['total'])
+
+                        try:
+                            cursor.execute(item_sqlstm, item_tuple)
+                            logger.info('Item [{0}] inserted into prdped table (uri: {1}) (transid:{2})'.format(item['cdpro'], req.relative_uri, transid))
+
+                        except mariadb.Error as e:
+                            logger.error('Database Item Error {0} (transid:{1})'.format(e, transid))
+                            conn.rollback()
+                            title = "Database Item Error"
+                            description = "{0}".format(e)
+                            raise falcon.HTTPConflict(title, description, xheader)
+
+
+                except falcon.errors.HTTPBadRequest as e:
+                    logger.error('{0} {1} (uri: {2}) (transid:{3})'.format(e.title, e.description, req.relative_uri, transid))
+                    raise falcon.HTTPBadRequest(e.title, e.description, xheader)
+
+                except:
+                    msg = 'Syntax do Objeto JSON nao aceito'
+                    logger.error('JSON Syntax Erro: {0} (uri: {1}) (transid:{2})'.format(msg, req.relative_uri, transid))
+                    raise falcon.HTTPBadRequest("JSON Syntax Error", msg, xheader)
+
+                conn.commit()
+                logger.info('Insert query committed (uri: {1}) (transid:{0})'.format(transid,req.relative_uri))
+
+
+            resp.status = falcon.HTTP_201
+            resp.append_header('X-Trans-Id',transid)
+            resp.body = json.dumps({'status': 1, 'message': 'success'})
+
+        except mariadb.Error as e:
+            logger.error('Database Connection Error {0} (transid:{1})'.format(e, transid))
+            title = "Database Connection Error"
+            description = "{0}".format(e)
+            raise falcon.HTTPInternalServerError(title, description, xheader)
+
+        finally:
+            if conn.is_connected():
+               cursor.close()
+               conn.close()
+               logger.info('DB connection closed (uri: {0}) (transid:{1})'.format(req.relative_uri, transid))
 
 
 
