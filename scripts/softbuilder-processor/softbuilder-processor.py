@@ -14,6 +14,7 @@ import logging
 import urllib3
 import requests
 from requests.exceptions import HTTPError
+import slack
 
 
 
@@ -71,6 +72,34 @@ def set_up_logging(conf):
 
 
 
+def enviar_mensagem_slack(logger, slack_token, channel, message):
+
+    client = slack.WebClient(token=slack_token)
+    try:
+        response = client.chat_postMessage(channel=channel, text=message)
+    except:
+        logger.exception(f"Slack Inesperado -  {sys.exc_info()[0]} : {sys.exc_info()[1]}")
+
+
+    # Check to see if the message sent successfully.
+    # If the message succeeded, `response["ok"]`` will be `True`
+    if response["ok"]:
+        #logger.info(f"Slack mensagem enviada com sucesso para {response["channel"]}/{response["message"]["ts"]}")
+        logger.info(f"Slack mensagem enviada com sucesso para {channel}")
+    # If the message failed, check for rate limit headers in the response
+    # and try to send it a second time only
+    elif response["ok"] is False and response["headers"]["Retry-After"]:
+        delay = int(response["headers"]["Retry-After"])
+        logger.info("Slack Rate limited - Retransmitindo em " + str(delay) + " seconds")
+        time.sleep(delay)
+        retry = client.chat_postMessage(channel=channel, text=message)
+        if retry["ok"]:
+            logger.info(f"Slack mensagem enviada com sucesso para  {channel} (retry:2)")
+        else:
+            logger.info(f"Slack mensagem nao enviada devido problemas (retry:2)")
+
+
+
 def parse_config(configfile):
     """
     Takes care of parsing the configuration file
@@ -110,6 +139,15 @@ def parse_config(configfile):
         else:
             raise Exception("Secao para Rest API nao encontrados")
             sys.exit(1)
+
+        if c.has_section('slack'):
+            conf = dict(c.items('slack'))
+            results['slack_token'] = conf.get('slack_token', 'XXXXX')
+            results['slack_channel'] = conf.get('slack_channel', 'sbvendas-pedidos')
+        else:
+            raise Exception("Secao para slack nao encontrada")
+            sys.exit(1)
+
 
     return results
 
@@ -170,36 +208,56 @@ def process_pedido(conf, logger, json_file):
     api_url = f"{proto}://{ip}:{port}{uri}"
     myheaders = {'X-Auth-Key': key, 'content-type':'application/json'}
 
+    """
+    SLACK
+    """
+    channel = conf['slack_channel']
+    token = conf['slack_token']
+
 
     """
     Open JSON file for pedido
     """
     json_loading = 0
     json_processed = 0
+    json_fname = os.path.basename(json_file)
+
+    # Slack Notificacoes
+    slack_msg_move_err = "Slack - Erro tentando "
+
     try:
         with open(json_file) as fd:
             try:
                 json_data = json.load(fd)
-                logger.info(f"Loading aquivo json de pedido: {json_file}")
-                json_loading = 1
+                if ( len(json_data['items']) or len(json_data['header']) ) == 0 :
+                    logger.info(f"Pedido nao parece conter nada: {json_file}")
+                    json_loading = 2
+                else:
+                    logger.info(f"Iniciando carregamento do pedido: {json_file}")
+                    json_loading = 1
             except json.JSONDecodeError as je:
-                logger.exception(f"Json Decode Erro - {je}")
+                logger.exception(f"Erro decodificando JSON - {je}")
                 fd.close()
             except ValueError as e:
-                logger.exception(f"Json erro ({e.errno}): {e.strerror}")
+                logger.exception(f"Erro JSON ({e.errno}): {e.strerror}")
                 fd.close()
     except IOError as e:
         logger.exception(f"I/O Erro ({e.errno}): {e.strerror}")
+        return 1
     except FileNotFoundError as fnf_error:
         logger.exception(f"Arquivo Json nao encontrado: {fnf_error}")
+        return 1
     except:
         logger.exception(f"I/O Erro Inesperado -  {sys.exc_info()[0]} : {sys.exc_info()[1]}")
+        return 1
     else:
-        logger.info(f"Fechando aquivo json de pedido: {json_file}")
+        logger.info(f"Fechando aquivo do pedido: {json_file}")
         fd.close()
 
 
-    if json_loading:
+    # Se tudo deu certo loading o arquivo json
+    # enviar arquivo para Rest API
+    if json_loading == 1:
         try:
             response = requests.put(api_url, json=json_data, headers=myheaders, verify=False)
             transId = response.headers.get('X-Trans-Id','N/A')
@@ -208,9 +266,11 @@ def process_pedido(conf, logger, json_file):
         except HTTPError as http_err:
             logger.error(f"HTTP erro ocorreu: {http_err}")
             logger.error(f"Arquivo {json_file} nao pode ser submitido")
+            return 1
         except Exception as err:
-            logger.error(f"Other error occurred: {err}")
+            logger.error(f"Non-HTTP erro ocorreu: {err}")
             logger.error(f"Arquivo {json_file} nao pode ser submitido")
+            return 1
         else:
             logger.info(f"Pedido submitido com sucesso (Status: {response.status_code}, Trans-Id: {transId})")
 
@@ -222,29 +282,82 @@ def process_pedido(conf, logger, json_file):
             try:
                 shutil.move(json_file, conf['json_outgoing'])
                 logger.info(f"Movendo arquivo Json de pedido ja processado (Trans-Id: {transId})")
+
+            except shutil.Error as se:
+                logger.exception(f"Shutil erro movendo arquivo: {se} (Trans-Id: {transId})")
+                slack_msg_move_err = f"Slack - Shutil erro movendo arquivo json {json_fname} para diretorio errors (Trans-Id: {transId})"
+                slack_msg_move_err += f"\nSlack - Shutil Error: {se} (Trans-Id: {transId})"
+                enviar_mensagem_slack(logger, token, channel, slack_msg_move_err)
             except IOError as e:
                 logger.exception(f"I/O Erro movendo arquivo - ({e.filename},{e.errno}): {e.strerror} (Trans-Id: {transId})")
+                slack_msg_move_err = f"Slack - I/O Erro movendo arquivo json {json_fname} para diretorio errors (Trans-Id: {transId})"
+                slack_msg_move_err += f"\nSlack - I/O Error: ({e.filename},{e.errno}), {e.strerror}  (Trans-Id: {transId})"
+                enviar_mensagem_slack(logger, token, channel, slack_msg_move_err)
             except OSError as e:
                 logger.exception(f"OS Erro movendo arquivo - ({e.filename},{e.errno}): {e.strerror} (Trans-Id: {transId})")
+                slack_msg_move_err = f"Slack - OS Erro movendo arquivo json {json_fname} para diretorio errors (Trans-Id: {transId})"
+                slack_msg_move_err += f"\nSlack - OS Error: ({e.filename},{e.errno}), {e.strerror}  (Trans-Id: {transId})"
+                enviar_mensagem_slack(logger, token, channel, slack_msg_move_err)
         else:
             try:
                 shutil.move(json_file, conf['json_errors'])
                 logger.error(f"Movendo arquivo Json de pedido nao processado para diretorio errors (Trans-Id: {transId})")
                 return 1
+            except shutil.Error as se:
+                logger.exception(f"Shutil erro movendo arquivo: {se} (Trans-Id: {transId})")
+                slack_msg_move_err = f"Slack - Shutil erro movendo arquivo json {json_fname} para diretorio errors (Trans-Id: {transId})"
+                slack_msg_move_err += f"\nSlack - Shutil Error: {se} (Trans-Id: {transId})"
+                enviar_mensagem_slack(logger, token, channel, slack_msg_move_err)
+                return 1
             except IOError as e:
                 logger.exception(f"I/O Erro movendo arquivo - ({e.filename},{e.errno}): {e.strerror} (Trans-Id: {transId})")
+                slack_msg_move_err = f"Slack - Erro tentando mover arquivo json {json_fname} para diretorio errors (Trans-Id: {transId})"
+                slack_msg_move_err += f"\nSlack - I/O Error: ({e.filename},{e.errno}), {e.strerror}  (Trans-Id: {transId})"
+                enviar_mensagem_slack(logger, token, channel, slack_msg_move_err)
+                return 1
             except OSError as e:
                 logger.exception(f"OS Erro movendo arquivo - ({e.filename},{e.errno}): {e.strerror} (Trans-Id: {transId})")
+                slack_msg_move_err = f"Slack - OS Erro movendo arquivo json {json_fname} para diretorio errors (Trans-Id: {transId})"
+                slack_msg_move_err += f"\nSlack - OS Error: ({e.filename},{e.errno}), {e.strerror}  (Trans-Id: {transId})"
+                enviar_mensagem_slack(logger, token, channel, slack_msg_move_err)
+                return 1
 
+    elif json_loading == 2:
+            try:
+                shutil.move(json_file, conf['json_errors'])
+                logger.error(f"Arquivo {json_fname} nao contem nenhum item")
+                logger.error(f"Movendo arquivo de pedido vazio")
+                return 1
+            except (shutil.Error, IOError, OSError) as e:
+                logger.error(f"Erro movendo arquivo de pedido vazio: {e}")
+                slack_msg_move_err = f"Slack - Erro movendo arquivo de pedido vazio {json_fname}"
+                slack_msg_move_err += f"\nSlack - {e}"
+                slack_msg_move_err += f"\nSlack - Nada sendo processado"
+                enviar_mensagem_slack(logger, token, channel, slack_msg_move_err)
+                return 1
     else:
         try:
             shutil.move(json_file, conf['json_errors'])
-            logger.error(f"Movendo arquivo Json de pedido com erro de syntax para diretorio errors (Trans-Id: {transId})")
+            logger.error(f"Error JSON Syntax com arquivo {json_fname}, movendo para diretorio errors (Trans-Id: {transId})")
+            return 1
+        except shutil.Error as se:
+            logger.exception(f"Shutil erro movendo arquivo: {se} (Trans-Id: {transId})")
+            slack_msg_move_err = f"Slack - Shutil erro movendo arquivo json {json_fname} para diretorio errors (Trans-Id: {transId})"
+            slack_msg_move_err += f"\nSlack - Shutil Error: {se} (Trans-Id: {transId})"
+            enviar_mensagem_slack(logger, token, channel, slack_msg_move_err)
             return 1
         except IOError as e:
             logger.exception(f"I/O Erro movendo arquivo - ({e.filename},{e.errno}): {e.strerror} (Trans-Id: {transId})")
+            slack_msg_move_err = f"Slack - JSON Syntax Erro: tentando mover arquivo {json_fname} para diretorio errors (Trans-Id: {transId})"
+            slack_msg_move_err += f"\nSlack - I/O Error: ({e.filename},{e.errno}), {e.strerror}  (Trans-Id: {transId})"
+            enviar_mensagem_slack(logger, token, channel, slack_msg_move_err)
+            return 1
         except OSError as e:
             logger.exception(f"OS Erro movendo arquivo - ({e.filename},{e.errno}): {e.strerror} (Trans-Id: {transId})")
+            slack_msg_move_err = f"Slack - JSON Syntax Erro: tentando mover arquivo {json_fname} para diretorio errors (Trans-Id: {transId})"
+            slack_msg_move_err += f"\nSlack - OS Error: ({e.filename},{e.errno}), {e.strerror}  (Trans-Id: {transId})"
+            enviar_mensagem_slack(logger, token, channel, slack_msg_move_err)
+            return 1
 
     return 0
 
@@ -276,10 +389,11 @@ def main():
     if lista_pedidos:
         for pedido in lista_pedidos:
             result = process_pedido(conf, logger, pedido)
+            pedido_base = os.path.basename(pedido)
             if not result:
                 logger.info(f"Pedido {pedido} processado")
             else:
-                logger.info(f"Pulando pedido {pedido} devido errors")
+                logger.info(f"Pulando pedido {pedido_base}")
     else:
         logger.info("Nenhum pedido para ser processado ... finalizando")
         sys.exit(0)
