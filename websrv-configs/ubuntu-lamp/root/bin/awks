@@ -1,0 +1,1 @@
+awk '/venxfab.php\?codven/  { print $2" "$1" "$3" "$22}' haproxy-all.log | egrep "0[7-9]:"
