@@ -1,0 +1,17 @@
+CREATE TABLE Cadcli (
+codcli                           char(5), 
+Status                           char(2), 
+nomecli                          char(40), 
+bairro                           char(25), 
+municipio                        char(35), 
+estado                           char(2), 
+cgccli                           char(18), 
+Area                             char(5), 
+data                             date, 
+Ult_DtCompra                     date, 
+Ult_VlCompra                     decimal(20,2), 
+Maior_DtCompra                   date, 
+Maior_VlCompra                   decimal(20,2), 
+Qtd_Valor                        decimal(20,2), 
+Qtd_Atraso                       decimal(20,2),
+Maior_Atraso                     decimal(20,2));

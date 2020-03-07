@@ -1,0 +1,16 @@
+CREATE TABLE PEDIDOS (
+Seq                              char(6), 
+Status                           char(2), 
+Dt_lanc                          date, 
+Hr_lanc                          char(8), 
+Dt_Import                        date, 
+Hr_Import                        char(8), 
+Data                             date, 
+NtFiscal                         char(6), 
+Codcli                           char(5), 
+CodVen                           char(5), 
+Meiopgto                         char(1), 
+TotPedido                        decimal(20,2), 
+Qtd_Parc                         decimal(20,2), 
+NpedCli                          char(12), 
+Obs1                             char(60));

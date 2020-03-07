@@ -1,0 +1,13 @@
+CREATE TABLE PrdPed (
+SeqN                             char(6), 
+Cdpro                            char(5), 
+SeqO                             char(4), 
+Data                             date, 
+Descpro                          char(60), 
+Und                              char(3), 
+Qtd                              decimal(20,2), 
+Qtd_pedido                       decimal(20,2), 
+Qtd_Bon                          decimal(20,2), 
+Valor                            decimal(20,2), 
+Valor1                           decimal(20,2), 
+Total                            decimal(20,2));
