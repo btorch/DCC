@@ -11,7 +11,7 @@ if(!(Test-Path $sqlExport)) {
 $Logfile = "C:\Users\torch\Downloads\Paradox2SQL\pdx2sql_produtos.log"
 
 # Location where Automa files are located
-$automaPath = "C:\Backup_26-08-2019\automa"
+$automaPath = "C:\Backup_06-09-2019\automa"
 
 # Array with all the relevant PDX directories currently used
 # $subdirs = @("caixa", "cheque", "ESTOQUE", "pagar", "receber")
@@ -31,15 +31,21 @@ LogWrite "$(Get-Date -Format 'u') - Inicio de exportacao de Produtos no Estoque"
 
 $pdxDb = "$automaPath\ESTOQUE\produto.DB"
 $outSuffix = $(Get-Date -Format "dd_MM_yyyy")
-$outFile = "estoque.produtos.$outSuffix.sql"
+$outFile = "estoque.produtos.sql"
 $fullOutPath = "$sqlExport\$outFile"
 #$options = "/FILTER:$tmpfile /SORTBY:codcli /MYSQL /DOUBLEQUOTA /nocreatetable"
 
-LogWrite "$(Get-Date -Format 'u') - ($num) Exportando Paradox $pdxDb Table para MySQL $fullOutPath"
-Write-Host  "$(Get-Date -Format 'u') - ($num) Automa $pdxDb --> MySQL $outFile"
-
-Set-Location -Path $sqlExport
-& 'C:\Program Files (x86)\Paradox Converter\pxcnv.exe' ${pdxDb} ${outFile}  /DOUBLEQUOTA /MYSQL /FILTER:status_filter.txt   /COLUMNS:Codigo,Tipo,Status,Gramatura,CodFor,CodBar,Classe,RefFor,Fator,Marca,Dt_Compra,Pr_Compra,Qtd_Compra,Pr_Custo,Preco_Medio,DtUlt_Preco,PrUlt_Preco,Dt_Preco,Pr_Preco,Pr_Novo
+if (!(Test-Path $pdxDb )){
+    LogWrite "$(Get-Date -Format 'u') - Arquivo nao encontrado $pdxDb ... Terminando script!"
+    LogWrite "-----------------------------------------------------------------"
+    return
+}
+else {
+    LogWrite "$(Get-Date -Format 'u') - ($num) Exportando Paradox $pdxDb Table para MySQL $fullOutPath"
+    Write-Host  "$(Get-Date -Format 'u') - ($num) Automa $pdxDb --> MySQL $outFile"
+    Set-Location -Path $sqlExport
+    & 'C:\Program Files (x86)\Paradox Converter\pxcnv.exe' ${pdxDb} ${outFile}  /nocreatetable /DOUBLEQUOTA /MYSQL /FILTER:status_filter.txt   /COLUMNS:Codigo,Tipo,Status,Gramatura,CodFor,CodBar,Classe,RefFor,Fator,Marca,Dt_Compra,Pr_Compra,Qtd_Compra,Pr_Custo,Preco_Medio,DtUlt_Preco,PrUlt_Preco,Dt_Preco,Pr_Preco,Pr_Novo
+}
 
 ### FIM - Produtos no Estoque ###
 

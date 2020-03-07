@@ -2,13 +2,13 @@ Import-Module 'Carbon'
 
 
 # Location where SQL dumps will be placed
-$pdxPath = "C:\Users\torch\Downloads\Paradox2SQL\DB2SQL"
+$pdxPath = "C:\Users\torch\Downloads\Paradox2SQL\SQL-26"
 
 # Location where log file will be placed
 $Logfile = "C:\Users\torch\Downloads\Paradox2SQL\pdx2sql.log"
 
 # Location where Automa files are located
-$automaPath = "C:\Backup_22-08-2019\automa"
+$automaPath = "C:\Backup_26-08-2019\automa"
 
 # Array with all the relevant PDX directories currently used
 #$PdxLocations = @("C:\automa-bk", "C:\automa-bk\caixa", "C:\automa-bk\cheque", "C:\automa-bk\ESTOQUE", "C:\automa-bk\pagar", "C:\automa-bk\receber")

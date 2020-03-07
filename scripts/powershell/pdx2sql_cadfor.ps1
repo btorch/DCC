@@ -8,7 +8,7 @@ if(!(Test-Path $sqlExport)) {
 }
 
 # Location where log file will be placed
-$Logfile = "C:\Users\torch\Downloads\Paradox2SQL\pdx2sql_pedidos-prd.log"
+$Logfile = "C:\Users\torch\Downloads\Paradox2SQL\pdx2sql_Cadfor.log"
 
 # Location where Automa files are located
 $automaPath = "C:\Backup_06-09-2019\automa"
@@ -27,11 +27,11 @@ Function LogWrite
 
 ### INICIO - Produtos no Estoque ###
 LogWrite "-----------------------------------------------------------------"
-LogWrite "$(Get-Date -Format 'u') - Inicio de exportacao de Produtos dos Pedidos no Estoque"
+LogWrite "$(Get-Date -Format 'u') - Inicio de exportacao de Cadastro de Vendedores"
 
-$pdxDb = "$automaPath\ESTOQUE\PrdPed.DB"
+$pdxDb = "$automaPath\pagar\Cadfor.DB"
 $outSuffix = $(Get-Date -Format "dd_MM_yyyy")
-$outFile = "estoque.PrdPed.sql"
+$outFile = "pagar.Cadfor.sql"
 $fullOutPath = "$sqlExport\$outFile"
 #$options = "/FILTER:$tmpfile /SORTBY:codcli /MYSQL /DOUBLEQUOTA /nocreatetable"
 
@@ -44,10 +44,10 @@ else {
     LogWrite "$(Get-Date -Format 'u') - ($num) Exportando Paradox $pdxDb Table para MySQL $fullOutPath"
     Write-Host  "$(Get-Date -Format 'u') - ($num) Automa $pdxDb --> MySQL $outFile"
     Set-Location -Path $sqlExport
-    & 'C:\Program Files (x86)\Paradox Converter\pxcnv.exe' ${pdxDb} ${outFile} /nocreatetable /DOUBLEQUOTA /MYSQL /COLUMNS:SeqN,Cdpro,SeqO,Data,Descpro,Und,Qtd,Qtd_pedido,Qtd_Bon,Valor,Valor1,Total
+    & 'C:\Program Files (x86)\Paradox Converter\pxcnv.exe' ${pdxDb} ${outFile}  /DOUBLEQUOTA /MYSQL /nocreatetable
 }
 
-### FIM - Produtos dos Pedidos ###
+### FIM - Cadastro de Vendedores ###
 
 
 LogWrite "$(Get-Date -Format 'u') - Fim de todas exportacoes para MySQL"
