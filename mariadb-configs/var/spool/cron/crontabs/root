@@ -1,0 +1,11 @@
+# For more information see the manual pages of crontab(5) and cron(8)
+#
+# m h  dom mon dow   command
+10 */1 * * * /usr/sbin/ntpdate -s 0.ubuntu.pool.ntp.org
+# Importar Pedidos
+*/20 * * * * /opt/pdx2sql/bin/pdx2sql_import.py -c /opt/pdx2sql/etc/pdx2sql_import_PEDIDOS.cfg
+*/20 * * * * /opt/pdx2sql/bin/pdx2sql_import.py -c /opt/pdx2sql/etc/pdx2sql_import_PrdPed.cfg
+05 */1 * * * /opt/pdx2sql/bin/pdx2sql_import.py -c /opt/pdx2sql/etc/pdx2sql_import_Cadcli.cfg
+# UTC
+15 10 * * * /opt/pdx2sql/bin/pdx2sql_import.py -c /opt/pdx2sql/etc/pdx2sql_import_produto.cfg
+05 10 1 * * /opt/pdx2sql/bin/pdx2sql_import.py -c /opt/pdx2sql/etc/pdx2sql_import_Cadven.cfg
