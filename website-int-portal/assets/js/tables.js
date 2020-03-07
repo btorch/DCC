@@ -7,7 +7,7 @@ function grabTransito(fornecedor) {
                 },
                 "processing": true,
                 //"responsive": true,
-                "scrollY": 300,
+                "scrollY": 250,
                 //"scrollX": true,
                 "scrollCollapse": false,
                 "paging": true,
@@ -37,12 +37,12 @@ function grabTransito(fornecedor) {
 function grabRecb(fornecedor) {
              window.recb = $('#recebidoTbl').DataTable({
                 "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json",
+                    "url": "//dfyzgwy1uk6e5.cloudfront.net/Portuguese-Brasil.json",
                     "decimal": ","
                 },
                 "processing": true,
                 //"responsive": true,
-                "scrollY": 300,
+                "scrollY": 250,
                 //"scrollX": true,
                 "scrollCollapse": false,
                 "paging": true,
