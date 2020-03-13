@@ -1,0 +1,48 @@
+@media (min-width: 300px) {
+  h1, h2, h3, h4, h5, h6 {
+    font-size: 1.2em;
+  }
+}
+
+@media (min-width: 300px) {
+  p {
+    font-size: 0.8em;
+  }
+}
+
+@media (min-width: 576px) {
+  h1, h2, h3, h4, h5, h6 {
+    font-size: 1.4em;
+  }
+}
+
+@media (min-width: 576px) {
+  p {
+    font-size: 0.8em;
+  }
+}
+
+@media (min-width: 768px) {
+  h1, h2, h3, h4, h5, h6 {
+    font-size: 2em;
+  }
+}
+
+@media (min-width: 768px) {
+  p {
+    font-size: 1.1em;
+  }
+}
+
+@media (min-width: 992px) {
+  h1, h2, h3, h4, h5, h6 {
+    font-size: 2.5em;
+  }
+}
+
+@media (min-width: 992px) {
+  p {
+    font-size: 1.5em;
+  }
+}
+
